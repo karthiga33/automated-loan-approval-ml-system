@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoanSmart AI - Instant Loan Approval</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a56db;
+            --primary-dark: #1e40af;
+            --primary-light: #dbeafe;
+            --accent: #0ea5e9;
+            --success: #059669;
+            --success-light: #d1fae5;
+            --danger: #dc2626;
+            --danger-light: #fee2e2;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --dark: #0f172a;
+            --gray-900: #1e293b;
+            --gray-800: #334155;
+            --gray-700: #475569;
+            --gray-500: #64748b;
+            --gray-400: #94a3b8;
+            --gray-300: #cbd5e1;
+            --gray-200: #e2e8f0;
+            --gray-100: #f1f5f9;
+            --gray-50: #f8fafc;
+            --white: #ffffff;
+            --gradient-1: linear-gradient(135deg, #1a56db 0%, #0ea5e9 100%);
+            --gradient-2: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1a56db 100%);
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: var(--white);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--gray-200);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .navbar .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        .navbar .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        .navbar .logo-text span { color: var(--primary); }
+        .navbar .nav-links { display: flex; gap: 8px; }
+        .navbar .nav-links a {
+            color: var(--gray-700);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .navbar .nav-links a:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            background: var(--gradient-2);
+            padding: 80px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(14,165,233,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(26,86,219,0.2) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero-content { position: relative; z-index: 2; max-width: 800px; margin: 0 auto; }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 13px;
+            color: #93c5fd;
+            margin-bottom: 24px;
+            backdrop-filter: blur(4px);
+        }
+        .hero-badge i { color: #fbbf24; }
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--white);
+            line-height: 1.1;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+        .hero h1 span {
+            background: linear-gradient(135deg, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 18px;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+        }
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+        }
+        .hero-stat {
+            text-align: center;
+        }
+        .hero-stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--white);
+        }
+        .hero-stat-label {
+            font-size: 12px;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        /* ===== FEATURES STRIP ===== */
+        .features-strip {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 24px;
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--gray-700);
+        }
+        .feature-item i {
+            color: var(--success);
+            font-size: 16px;
+        }
+
+        /* ===== STEPS INDICATOR ===== */
+        .steps-container {
+            max-width: 960px;
+            margin: 40px auto 0;
+            padding: 0 20px;
+        }
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 40px;
+        }
+        .steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 60px;
+            right: 60px;
+            height: 3px;
+            background: var(--gray-200);
+            z-index: 0;
+        }
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--gray-500);
+            transition: all 0.3s;
+            border: 3px solid var(--white);
+            box-shadow: var(--shadow-md);
+        }
+        .step.active .step-circle {
+            background: var(--gradient-1);
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(26,86,219,0.3);
+        }
+        .step.completed .step-circle {
+            background: var(--success);
+            color: var(--white);
+        }
+        .step-label {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-top: 8px;
+            font-weight: 500;
+        }
+        .step.active .step-label { color: var(--primary); font-weight: 600; }
+
+        /* ===== FORM STYLING ===== */
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px 60px; }
+
+        .form-section {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 36px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s;
+            animation: fadeInUp 0.5s ease;
+        }
+        .form-section:hover {
+            box-shadow: var(--shadow-lg);
+            border-color: var(--gray-300);
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .form-section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .form-section-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .form-section-icon.blue { background: #dbeafe; color: #2563eb; }
+        .form-section-icon.green { background: #d1fae5; color: #059669; }
+        .form-section-icon.purple { background: #ede9fe; color: #7c3aed; }
+        .form-section-icon.orange { background: #ffedd5; color: #ea580c; }
+        .form-section-icon.red { background: #fee2e2; color: #dc2626; }
+        .form-section h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        .form-section .section-desc {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-top: 2px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group.full-width { grid-column: 1 / -1; }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .form-group label .required { color: var(--danger); }
+        .form-group input, .form-group select {
+            padding: 12px 16px;
+            border: 1.5px solid var(--gray-200);
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.2s;
+            background: var(--white);
+            color: var(--dark);
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(26,86,219,0.08);
+        }
+        .form-group input::placeholder { color: var(--gray-400); }
+        .form-group .hint {
+            font-size: 11px;
+            color: var(--gray-400);
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .form-group .hint i { font-size: 10px; }
+
+        /* ===== CONSENT BOX ===== */
+        .consent-card {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 1px solid #bae6fd;
+            padding: 20px 24px;
+            border-radius: var(--radius);
+            margin-top: 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+        .consent-card input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+        .consent-card label {
+            font-size: 13px;
+            color: var(--gray-700);
+            line-height: 1.6;
+            cursor: pointer;
+        }
+
+        /* ===== SUBMIT BUTTON ===== */
+        .btn-primary {
+            width: 100%;
+            padding: 16px 32px;
+            background: var(--gradient-1);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            margin-top: 28px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(26,86,219,0.25);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(26,86,219,0.35);
+        }
+        .btn-primary:active { transform: translateY(0); }
+        .btn-primary:disabled {
+            background: var(--gray-300);
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-primary i { font-size: 14px; }
+
+        /* ===== LOADING STATE ===== */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15,23,42,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .loading-overlay.show { display: flex; }
+        .loading-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 48px 60px;
+            text-align: center;
+            box-shadow: var(--shadow-xl);
+            animation: scaleIn 0.3s ease;
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .loading-spinner {
+            width: 56px;
+            height: 56px;
+            border: 4px solid var(--gray-200);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .loading-card h4 { font-size: 18px; color: var(--dark); margin-bottom: 8px; }
+        .loading-card p { font-size: 14px; color: var(--gray-500); }
+        .loading-steps {
+            margin-top: 24px;
+            text-align: left;
+        }
+        .loading-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 13px;
+            color: var(--gray-500);
+            transition: all 0.3s;
+        }
+        .loading-step.active { color: var(--primary); font-weight: 500; }
+        .loading-step.done { color: var(--success); }
+        .loading-step i { width: 16px; text-align: center; }
+
+        /* ===== RESULT CARD ===== */
+        .result-section {
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+        .result-section.show { display: block; }
+
+        .result-hero {
+            border-radius: var(--radius-xl);
+            padding: 48px;
+            text-align: center;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        .result-hero.approved {
+            background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
+        }
+        .result-hero.rejected {
+            background: linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%);
+        }
+        .result-hero.review {
+            background: linear-gradient(135deg, #78350f 0%, #d97706 100%);
+        }
+        .result-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+        .result-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 32px;
+            color: white;
+        }
+        .result-hero h2 { font-size: 28px; color: white; margin-bottom: 8px; }
+        .result-hero .confidence {
+            font-size: 14px;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 4px;
+        }
+        .result-hero .app-id {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+            font-family: monospace;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        .result-card-item {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 24px;
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
+        }
+        .result-card-item h4 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray-500);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .result-card-item h4 i { color: var(--primary); }
+        .result-card-item ul { list-style: none; }
+        .result-card-item li {
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 13px;
+            line-height: 1.5;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .result-card-item li i { margin-top: 3px; font-size: 12px; flex-shrink: 0; }
+        .result-card-item li.positive { background: #f0fdf4; color: #166534; }
+        .result-card-item li.positive i { color: #22c55e; }
+        .result-card-item li.negative { background: #fef2f2; color: #991b1b; }
+        .result-card-item li.negative i { color: #ef4444; }
+        .result-card-item li.suggestion { background: #fffbeb; color: #92400e; }
+        .result-card-item li.suggestion i { color: #f59e0b; }
+        .result-card-item li.step { background: var(--gray-50); color: var(--gray-700); }
+        .result-card-item li.step i { color: var(--primary); }
+
+        .cibil-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 24px;
+            border: 1px solid var(--gray-200);
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .cibil-score {
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1;
+        }
+        .cibil-max { font-size: 16px; color: var(--gray-400); font-weight: 400; }
+        .cibil-label { font-size: 12px; color: var(--gray-500); margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .cibil-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: var(--gray-200);
+            margin-top: 16px;
+            overflow: hidden;
+        }
+        .cibil-bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+
+        /* ===== DOCUMENT UPLOAD SECTION ===== */
+        .doc-upload-section {
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+        .doc-upload-section.show { display: block; }
+        .doc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 20px;
+        }
+        .doc-item {
+            border: 2px dashed var(--gray-200);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+        .doc-item:hover { border-color: var(--primary); background: #f8faff; }
+        .doc-item.uploaded { border-color: var(--success); border-style: solid; background: #f0fdf4; }
+        .doc-item i { font-size: 24px; color: var(--gray-400); margin-bottom: 8px; }
+        .doc-item.uploaded i { color: var(--success); }
+        .doc-item .doc-label { font-size: 13px; font-weight: 600; color: var(--gray-700); margin-bottom: 4px; }
+        .doc-item .doc-hint { font-size: 11px; color: var(--gray-400); }
+        .doc-item input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .btn-upload {
+            width: 100%;
+            padding: 14px;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            margin-top: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-upload:hover { background: #047857; transform: translateY(-1px); }
+
+        /* ===== ERROR DISPLAY ===== */
+        .error-banner {
+            display: none;
+            background: var(--danger-light);
+            border: 1px solid #fca5a5;
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            margin-top: 16px;
+            animation: shake 0.3s ease;
+        }
+        .error-banner.show { display: block; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .error-banner h4 { color: #991b1b; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .error-banner ul { list-style: none; }
+        .error-banner li { font-size: 13px; color: #991b1b; padding: 3px 0; padding-left: 20px; position: relative; }
+        .error-banner li::before { content: '•'; position: absolute; left: 8px; }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--dark);
+            padding: 40px;
+            text-align: center;
+            color: var(--gray-400);
+            font-size: 13px;
+            margin-top: 60px;
+        }
+        .footer a { color: var(--accent); text-decoration: none; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .form-grid, .result-grid, .doc-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 32px; }
+            .hero-stats { flex-direction: column; gap: 16px; }
+            .features-strip { flex-direction: column; align-items: center; gap: 12px; }
+            .steps { display: none; }
+            .navbar { padding: 12px 16px; }
+            .form-section { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-shield-halved"></i></div>
+            <div class="logo-text">Loan<span>Smart</span> AI</div>
+        </div>
+        <div class="nav-links">
+            <a href="/"><i class="fas fa-home"></i> Home</a>
+            <a href="/emi"><i class="fas fa-calculator"></i> EMI</a>
+            <a href="/eligibility"><i class="fas fa-check-double"></i> Eligibility</a>
+            <a href="#apply"><i class="fas fa-file-alt"></i> Apply</a>
+            <a href="/track"><i class="fas fa-search"></i> Track</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge"><i class="fas fa-star"></i> AI-Powered Instant Decisions</div>
+            <h1>Get Your Loan Approved <span>in Seconds</span></h1>
+            <p>Experience the future of lending. Our AI evaluates your application instantly with bank-grade accuracy, transparent decisions, and zero paperwork delays.</p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-value">90.4%</div>
+                    <div class="hero-stat-label">Precision Rate</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">&lt;5s</div>
+                    <div class="hero-stat-label">Decision Time</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">₹50L</div>
+                    <div class="hero-stat-label">Max Loan</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">24/7</div>
+                    <div class="hero-stat-label">Availability</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES STRIP -->
+    <div class="features-strip">
+        <div class="feature-item"><i class="fas fa-check-circle"></i> CIBIL Score Check</div>
+        <div class="feature-item"><i class="fas fa-check-circle"></i> Aadhaar Verified</div>
+        <div class="feature-item"><i class="fas fa-check-circle"></i> PAN Linked</div>
+        <div class="feature-item"><i class="fas fa-check-circle"></i> Bank Statement Analysis</div>
+        <div class="feature-item"><i class="fas fa-check-circle"></i> Instant Approval</div>
+    </div>
+
+    <!-- STEPS -->
+    <div class="steps-container" id="apply">
+        <div class="steps">
+            <div class="step active" id="step1"><div class="step-circle">1</div><div class="step-label">Personal Info</div></div>
+            <div class="step" id="step2"><div class="step-circle">2</div><div class="step-label">KYC Details</div></div>
+            <div class="step" id="step3"><div class="step-circle">3</div><div class="step-label">Income</div></div>
+            <div class="step" id="step4"><div class="step-circle">4</div><div class="step-label">Loan Details</div></div>
+            <div class="step" id="step5"><div class="step-circle">5</div><div class="step-label">Decision</div></div>
+        </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="container">
+        <form id="loanForm">
+            <!-- Section 1: Personal -->
+            <div class="form-section">
+                <div class="form-section-header">
+                    <div class="form-section-icon blue"><i class="fas fa-user"></i></div>
+                    <div>
+                        <h3>Personal Information</h3>
+                        <p class="section-desc">Basic details as per your government ID</p>
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Full Name (as per Aadhaar) <span class="required">*</span></label>
+                        <input type="text" name="full_name" required placeholder="e.g., Rajesh Kumar Sharma">
+                        <span class="hint"><i class="fas fa-info-circle"></i> Must match your Aadhaar card exactly</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Age <span class="required">*</span></label>
+                        <input type="number" name="person_age" required min="18" max="80" placeholder="e.g., 28">
+                    </div>
+                    <div class="form-group">
+                        <label>Gender <span class="required">*</span></label>
+                        <select name="person_gender" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Education <span class="required">*</span></label>
+                        <select name="person_education" required>
+                            <option value="">Select Education</option>
+                            <option value="High School">High School (10+2)</option>
+                            <option value="Associate">Diploma / ITI</option>
+                            <option value="Bachelor">Bachelor's Degree</option>
+                            <option value="Master">Master's Degree</option>
+                            <option value="Doctorate">Doctorate / PhD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Residence Type <span class="required">*</span></label>
+                        <select name="person_home_ownership" required>
+                            <option value="">Select</option>
+                            <option value="OWN">Own House</option>
+                            <option value="RENT">Rented</option>
+                            <option value="MORTGAGE">Mortgaged</option>
+                            <option value="OTHER">Other / Family</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: KYC -->
+            <div class="form-section">
+                <div class="form-section-header">
+                    <div class="form-section-icon green"><i class="fas fa-id-card"></i></div>
+                    <div>
+                        <h3>KYC & Identity Verification</h3>
+                        <p class="section-desc">Government-issued ID details for verification</p>
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>PAN Number <span class="required">*</span></label>
+                        <input type="text" name="pan_number" required placeholder="ABCDE1234F" maxlength="10" style="text-transform:uppercase;">
+                        <span class="hint"><i class="fas fa-info-circle"></i> 5 letters + 4 digits + 1 letter</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Aadhaar Number <span class="required">*</span></label>
+                        <input type="text" name="aadhaar_number" required placeholder="XXXX XXXX XXXX" maxlength="14">
+                        <span class="hint"><i class="fas fa-info-circle"></i> 12-digit UID number</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" name="email" placeholder="you@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Mobile Number</label>
+                        <input type="tel" name="phone" placeholder="9876543210" maxlength="10">
+                        <span class="hint"><i class="fas fa-info-circle"></i> Aadhaar-linked mobile preferred</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Employment & Income -->
+            <div class="form-section">
+                <div class="form-section-header">
+                    <div class="form-section-icon purple"><i class="fas fa-briefcase"></i></div>
+                    <div>
+                        <h3>Employment & Income</h3>
+                        <p class="section-desc">Your current employment and earnings details</p>
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Annual Income (₹) <span class="required">*</span></label>
+                        <input type="number" name="person_income" required min="0" placeholder="e.g., 600000">
+                        <span class="hint"><i class="fas fa-info-circle"></i> Gross annual income before tax</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Employment Type <span class="required">*</span></label>
+                        <select name="employment_type" required>
+                            <option value="">Select Type</option>
+                            <option value="Full-time">Salaried (Full-time)</option>
+                            <option value="Part-time">Part-time</option>
+                            <option value="Self-employed">Self-employed / Business</option>
+                            <option value="Contract">Contract</option>
+                            <option value="Freelance">Freelance / Gig</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Work Experience (Years) <span class="required">*</span></label>
+                        <input type="number" name="person_emp_exp" required min="0" max="50" placeholder="e.g., 5">
+                    </div>
+                    <div class="form-group">
+                        <label>Bank Account Type</label>
+                        <select name="account_type">
+                            <option value="Savings">Savings Account</option>
+                            <option value="Checking">Current Account</option>
+                            <option value="Both">Both</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Loan Details -->
+            <div class="form-section">
+                <div class="form-section-header">
+                    <div class="form-section-icon orange"><i class="fas fa-indian-rupee-sign"></i></div>
+                    <div>
+                        <h3>Loan Requirements</h3>
+                        <p class="section-desc">How much do you need and for what purpose?</p>
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Loan Amount (₹) <span class="required">*</span></label>
+                        <input type="number" name="loan_amnt" required min="10000" max="50000000" placeholder="e.g., 500000">
+                        <span class="hint"><i class="fas fa-info-circle"></i> Min ₹10,000 — Max ₹5 Crore</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Loan Purpose <span class="required">*</span></label>
+                        <select name="loan_intent" required>
+                            <option value="">Select Purpose</option>
+                            <option value="PERSONAL">Personal Loan</option>
+                            <option value="HOME">Home Loan / Housing</option>
+                            <option value="EDUCATION">Education Loan</option>
+                            <option value="VEHICLE">Vehicle / Auto Loan</option>
+                            <option value="BUSINESS">Business Loan</option>
+                            <option value="MEDICAL">Medical Emergency</option>
+                            <option value="DEBTCONSOLIDATION">Debt Consolidation</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Preferred Interest Rate (%)</label>
+                        <input type="number" name="loan_int_rate" step="0.1" min="0" max="40" placeholder="e.g., 8.5">
+                        <span class="hint"><i class="fas fa-info-circle"></i> Leave blank for best available rate</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Credit History (Years)</label>
+                        <input type="number" name="cb_person_cred_hist_length" min="0" max="50" placeholder="e.g., 5">
+                        <span class="hint"><i class="fas fa-info-circle"></i> How long you've had credit accounts</span>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Any Previous Loan Defaults?</label>
+                        <select name="previous_loan_defaults_on_file">
+                            <option value="No">No — I have a clean repayment history</option>
+                            <option value="Yes">Yes — I have defaulted on a loan before</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="consent-card">
+                    <input type="checkbox" id="consent_cibil" name="consent_cibil_check" value="true">
+                    <label for="consent_cibil">
+                        <strong>CIBIL Consent:</strong> I authorize LoanSmart AI to check my CIBIL TransUnion credit score for the purpose of evaluating this loan application. I understand this is a <em>soft inquiry</em> and will not negatively impact my credit score. My data will be handled as per RBI guidelines.
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-primary" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i>
+                    Submit Application & Get Instant Decision
+                </button>
+            </div>
+        </form>
+
+        <!-- ERROR BANNER -->
+        <div class="error-banner" id="errorBanner">
+            <h4><i class="fas fa-exclamation-triangle"></i> Please fix the following errors</h4>
+            <ul id="errorList"></ul>
+        </div>
+
+        <!-- RESULT SECTION -->
+        <div class="result-section" id="resultSection">
+            <div class="result-hero" id="resultHero">
+                <div class="result-icon" id="resultIcon"></div>
+                <h2 id="resultTitle"></h2>
+                <p class="confidence" id="resultConfidence"></p>
+                <p class="app-id" id="resultAppId"></p>
+            </div>
+
+            <div class="cibil-card" id="cibilCard" style="display:none;">
+                <div class="cibil-label">Your CIBIL Credit Score</div>
+                <div class="cibil-score" id="cibilScoreValue"></div>
+                <span class="cibil-max"> / 900</span>
+                <div class="cibil-bar"><div class="cibil-bar-fill" id="cibilBar"></div></div>
+            </div>
+
+            <div class="result-grid">
+                <div class="result-card-item">
+                    <h4><i class="fas fa-clipboard-check"></i> Decision Reasons</h4>
+                    <ul id="reasonsList"></ul>
+                </div>
+                <div class="result-card-item" id="suggestionsCard" style="display:none;">
+                    <h4><i class="fas fa-lightbulb"></i> How to Improve</h4>
+                    <ul id="suggestionsList"></ul>
+                </div>
+                <div class="result-card-item" id="nextStepsCard">
+                    <h4><i class="fas fa-arrow-right"></i> Next Steps</h4>
+                    <ul id="nextStepsList"></ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- DOCUMENT UPLOAD -->
+        <div class="doc-upload-section" id="docSection">
+            <div class="form-section">
+                <div class="form-section-header">
+                    <div class="form-section-icon red"><i class="fas fa-file-upload"></i></div>
+                    <div>
+                        <h3>Upload Verification Documents</h3>
+                        <p class="section-desc">Upload clear scans or photos (PDF, JPG, PNG — max 10MB each)</p>
+                    </div>
+                </div>
+                <div class="doc-grid" id="docGrid"></div>
+                <button type="button" class="btn-upload" onclick="uploadDocuments()">
+                    <i class="fas fa-cloud-upload-alt"></i> Upload All Documents
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOADING OVERLAY -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-card">
+            <div class="loading-spinner"></div>
+            <h4>Analyzing Your Application</h4>
+            <p>Our AI is evaluating your eligibility...</p>
+            <div class="loading-steps">
+                <div class="loading-step active" id="ls1"><i class="fas fa-spinner fa-spin"></i> Validating information</div>
+                <div class="loading-step" id="ls2"><i class="far fa-circle"></i> Running CIBIL check</div>
+                <div class="loading-step" id="ls3"><i class="far fa-circle"></i> ML model prediction</div>
+                <div class="loading-step" id="ls4"><i class="far fa-circle"></i> Generating decision</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>LoanSmart AI — Powered by Machine Learning | Built on AWS | <a href="#">Privacy Policy</a> | <a href="#">Terms</a></p>
+        <p style="margin-top:8px; font-size:11px; color:#475569;">This is an AI-powered decision system. You have the right to request manual review of any automated decision.</p>
+    </footer>
+
+    <script>
+    // ===== FORM SUBMISSION =====
+    document.getElementById('loanForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loadingOverlay');
+        const errorBanner = document.getElementById('errorBanner');
+        const resultSection = document.getElementById('resultSection');
+        const docSection = document.getElementById('docSection');
+
+        // Reset
+        errorBanner.classList.remove('show');
+        resultSection.classList.remove('show');
+        docSection.classList.remove('show');
+        loading.classList.add('show');
+        submitBtn.disabled = true;
+
+        // Animate loading steps
+        animateLoadingSteps();
+
+        // Collect form data
+        const formData = new FormData(e.target);
+        const data = {};
+        formData.forEach((value, key) => {
+            if (key === 'consent_cibil_check') { data[key] = true; return; }
+            if (['person_age','person_income','person_emp_exp','loan_amnt','loan_int_rate','cb_person_cred_hist_length'].includes(key)) {
+                data[key] = parseFloat(value) || 0;
+            } else {
+                data[key] = value;
+            }
+        });
+        if (!formData.has('consent_cibil_check')) data['consent_cibil_check'] = false;
+
+        try {
+            const response = await fetch('/api/applications/submit', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+
+            // Wait for animation to complete
+            await new Promise(resolve => setTimeout(resolve, 2500));
+            loading.classList.remove('show');
+            submitBtn.disabled = false;
+
+            if (!response.ok) {
+                showErrors(result);
+                return;
+            }
+
+            showResult(result);
+            // Show documents for approved/review
+            if (result.decision === 'APPROVED' || result.decision === 'MANUAL_REVIEW') {
+                showDocumentUpload(
+                    data.loan_intent || 'PERSONAL',
+                    data.employment_type || 'Full-time',
+                    result.application_id
+                );
+            }
+
+        } catch (err) {
+            loading.classList.remove('show');
+            submitBtn.disabled = false;
+            document.getElementById('errorList').innerHTML = '<li>Network error. Please check your connection.</li>';
+            errorBanner.classList.add('show');
+        }
+    });
+
+    // ===== LOADING ANIMATION =====
+    function animateLoadingSteps() {
+        const steps = ['ls1','ls2','ls3','ls4'];
+        steps.forEach((id, i) => {
+            setTimeout(() => {
+                const el = document.getElementById(id);
+                el.classList.add('active');
+                el.querySelector('i').className = 'fas fa-spinner fa-spin';
+                if (i > 0) {
+                    const prev = document.getElementById(steps[i-1]);
+                    prev.classList.remove('active');
+                    prev.classList.add('done');
+                    prev.querySelector('i').className = 'fas fa-check-circle';
+                }
+            }, i * 700);
+        });
+        setTimeout(() => {
+            const last = document.getElementById(steps[steps.length-1]);
+            last.classList.remove('active');
+            last.classList.add('done');
+            last.querySelector('i').className = 'fas fa-check-circle';
+        }, steps.length * 700);
+    }
+
+    // ===== SHOW ERRORS =====
+    function showErrors(result) {
+        const list = document.getElementById('errorList');
+        list.innerHTML = '';
+        if (result.errors) {
+            result.errors.forEach(err => {
+                list.innerHTML += `<li><strong>${err.field}:</strong> ${err.message}</li>`;
+            });
+        } else {
+            list.innerHTML = `<li>${result.error || 'An unexpected error occurred'}</li>`;
+        }
+        document.getElementById('errorBanner').classList.add('show');
+        document.getElementById('errorBanner').scrollIntoView({behavior:'smooth', block:'center'});
+    }
+
+    // ===== SHOW RESULT =====
+    function showResult(result) {
+        const section = document.getElementById('resultSection');
+        const hero = document.getElementById('resultHero');
+        const decision = result.decision;
+
+        // Style based on decision
+        hero.className = 'result-hero';
+        if (decision === 'APPROVED') {
+            hero.classList.add('approved');
+            document.getElementById('resultIcon').innerHTML = '<i class="fas fa-check"></i>';
+            document.getElementById('resultTitle').textContent = 'Congratulations! Loan Approved';
+        } else if (decision === 'REJECTED') {
+            hero.classList.add('rejected');
+            document.getElementById('resultIcon').innerHTML = '<i class="fas fa-times"></i>';
+            document.getElementById('resultTitle').textContent = 'Application Not Approved';
+        } else {
+            hero.classList.add('review');
+            document.getElementById('resultIcon').innerHTML = '<i class="fas fa-clock"></i>';
+            document.getElementById('resultTitle').textContent = 'Under Manual Review';
+        }
+
+        document.getElementById('resultConfidence').textContent = `Decision Confidence: ${result.confidence}%`;
+        document.getElementById('resultAppId').textContent = `Application ID: ${result.application_id}`;
+
+        // CIBIL Score
+        if (result.cibil_score) {
+            const cibilCard = document.getElementById('cibilCard');
+            cibilCard.style.display = 'block';
+            const score = result.cibil_score;
+            const scoreEl = document.getElementById('cibilScoreValue');
+            scoreEl.textContent = score;
+            scoreEl.style.color = score >= 750 ? '#059669' : score >= 650 ? '#d97706' : '#dc2626';
+            const barFill = document.getElementById('cibilBar');
+            const percent = ((score - 300) / 600) * 100;
+            barFill.style.width = percent + '%';
+            barFill.style.background = score >= 750 ? '#059669' : score >= 650 ? '#d97706' : '#dc2626';
+        }
+
+        // Reasons
+        const explanation = result.explanation || {};
+        const reasonsList = document.getElementById('reasonsList');
+        reasonsList.innerHTML = '';
+        (explanation.primary_reasons || []).forEach(r => {
+            const cls = decision === 'APPROVED' ? 'positive' : 'negative';
+            const icon = decision === 'APPROVED' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            reasonsList.innerHTML += `<li class="${cls}"><i class="fas ${icon}"></i><span>${r}</span></li>`;
+        });
+
+        // Suggestions
+        const suggestions = explanation.suggestions_to_improve || [];
+        const suggestionsCard = document.getElementById('suggestionsCard');
+        if (suggestions.length > 0 && decision !== 'APPROVED') {
+            suggestionsCard.style.display = 'block';
+            const sl = document.getElementById('suggestionsList');
+            sl.innerHTML = '';
+            suggestions.forEach(s => {
+                sl.innerHTML += `<li class="suggestion"><i class="fas fa-lightbulb"></i><span>${s}</span></li>`;
+            });
+        } else {
+            suggestionsCard.style.display = 'none';
+        }
+
+        // Next Steps
+        const nextStepsList = document.getElementById('nextStepsList');
+        nextStepsList.innerHTML = '';
+        (result.next_steps || []).forEach(step => {
+            nextStepsList.innerHTML += `<li class="step"><i class="fas fa-arrow-right"></i><span>${step}</span></li>`;
+        });
+
+        // Update progress steps
+        document.querySelectorAll('.step').forEach(s => s.classList.add('completed'));
+        document.getElementById('step5').classList.add('active');
+
+        section.classList.add('show');
+        section.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+
+    // ===== DOCUMENT UPLOAD =====
+    function showDocumentUpload(loanType, empType, appId) {
+        const docs = getRequiredDocuments(loanType, empType);
+        const grid = document.getElementById('docGrid');
+        grid.innerHTML = '';
+
+        docs.forEach(doc => {
+            const div = document.createElement('div');
+            div.className = 'doc-item';
+            div.id = 'doc-' + doc.type;
+            div.innerHTML = `
+                <i class="fas ${doc.icon}"></i>
+                <div class="doc-label">${doc.label}</div>
+                <div class="doc-hint">${doc.hint}</div>
+                <input type="file" name="${doc.type}" accept=".pdf,.jpg,.jpeg,.png" 
+                       onchange="markUploaded(this, '${doc.type}')">
+            `;
+            grid.appendChild(div);
+        });
+
+        const section = document.getElementById('docSection');
+        section.classList.add('show');
+        section.dataset.appId = appId;
+    }
+
+    function markUploaded(input, docType) {
+        if (input.files.length > 0) {
+            const item = document.getElementById('doc-' + docType);
+            item.classList.add('uploaded');
+            item.querySelector('i').className = 'fas fa-check-circle';
+        }
+    }
+
+    function getRequiredDocuments(loanType, empType) {
+        const docs = [
+            {type:'aadhaar_front', label:'Aadhaar Card (Front)', hint:'Photo/scan with name, DOB, UID', icon:'fa-id-card'},
+            {type:'aadhaar_back', label:'Aadhaar Card (Back)', hint:'Full address and QR code', icon:'fa-id-card'},
+            {type:'pan_card', label:'PAN Card', hint:'Clear scan showing PAN number', icon:'fa-credit-card'},
+            {type:'photograph', label:'Passport Photo', hint:'White background, recent', icon:'fa-camera'},
+            {type:'bank_statement', label:'Bank Statement (6 months)', hint:'PDF from bank with all transactions', icon:'fa-university'},
+            {type:'address_proof', label:'Address Proof', hint:'Utility bill or rent agreement', icon:'fa-map-marker-alt'},
+        ];
+
+        if (['Full-time','Part-time','Contract'].includes(empType)) {
+            docs.push(
+                {type:'salary_slip_1', label:'Salary Slip (Month 1)', hint:'Latest month payslip', icon:'fa-file-invoice-dollar'},
+                {type:'salary_slip_2', label:'Salary Slip (Month 2)', hint:'Previous month', icon:'fa-file-invoice-dollar'},
+                {type:'salary_slip_3', label:'Salary Slip (Month 3)', hint:'2 months ago', icon:'fa-file-invoice-dollar'},
+                {type:'form_16', label:'Form 16 / ITR', hint:'TDS certificate or tax return', icon:'fa-file-alt'},
+                {type:'appointment_letter', label:'Appointment Letter', hint:'Shows CTC and joining date', icon:'fa-file-contract'}
+            );
+        } else if (empType === 'Self-employed') {
+            docs.push(
+                {type:'itr_3_years', label:'ITR (Last 3 Years)', hint:'Income tax returns', icon:'fa-file-alt'},
+                {type:'gst_cert', label:'GST Registration', hint:'GSTIN certificate', icon:'fa-certificate'},
+                {type:'business_pan', label:'Business PAN', hint:'PAN of firm/company', icon:'fa-credit-card'},
+                {type:'profit_loss', label:'P&L Statement', hint:'Audited, last 2 years', icon:'fa-chart-line'},
+                {type:'balance_sheet', label:'Balance Sheet', hint:'Audited, last 2 years', icon:'fa-balance-scale'}
+            );
+        }
+
+        if (loanType === 'HOME') {
+            docs.push(
+                {type:'sale_agreement', label:'Sale Agreement', hint:'Registered property agreement', icon:'fa-home'},
+                {type:'title_deed', label:'Title Deed', hint:'Ownership proof', icon:'fa-scroll'},
+                {type:'property_tax', label:'Property Tax Receipt', hint:'Latest year', icon:'fa-receipt'},
+                {type:'rera_cert', label:'RERA Certificate', hint:'Builder registration', icon:'fa-building'}
+            );
+        } else if (loanType === 'VEHICLE') {
+            docs.push(
+                {type:'proforma_invoice', label:'Proforma Invoice', hint:'Dealer quotation', icon:'fa-car'},
+                {type:'insurance_quote', label:'Insurance Quote', hint:'Comprehensive cover', icon:'fa-shield-alt'}
+            );
+        } else if (loanType === 'EDUCATION') {
+            docs.push(
+                {type:'admission_letter', label:'Admission Letter', hint:'From institution', icon:'fa-graduation-cap'},
+                {type:'fee_structure', label:'Fee Structure', hint:'Breakdown of fees', icon:'fa-list-alt'}
+            );
+        } else if (loanType === 'BUSINESS') {
+            docs.push(
+                {type:'trade_license', label:'Trade License', hint:'Business registration', icon:'fa-store'},
+                {type:'gst_returns', label:'GST Returns (12 mo)', hint:'Monthly filings', icon:'fa-file-invoice'}
+            );
+        }
+
+        return docs;
+    }
+
+    async function uploadDocuments() {
+        const section = document.getElementById('docSection');
+        const appId = section.dataset.appId;
+        const files = section.querySelectorAll('input[type="file"]');
+        let uploaded = 0, total = 0;
+
+        // Show uploading state
+        const btn = section.querySelector('.btn-upload');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading & Verifying...';
+        btn.disabled = true;
+
+        for (const input of files) {
+            if (input.files.length > 0) {
+                total++;
+                const formData = new FormData();
+                formData.append('application_id', appId);
+                formData.append('document_type', input.name);
+                formData.append('file', input.files[0]);
+                try {
+                    const res = await fetch('/api/applications/upload-document', {method:'POST', body:formData});
+                    if (res.ok) uploaded++;
+                } catch(e) {}
+            }
+        }
+
+        if (uploaded === 0) {
+            btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Upload All Documents';
+            btn.disabled = false;
+            alert('Please select at least one document to upload.');
+            return;
+        }
+
+        // Now verify documents instantly
+        try {
+            const verifyRes = await fetch(`/api/applications/${appId}/verify-documents`, {method: 'POST'});
+            const verifyData = await verifyRes.json();
+
+            btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Upload All Documents';
+            btn.disabled = false;
+
+            showVerificationResults(verifyData);
+        } catch(e) {
+            btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Upload All Documents';
+            btn.disabled = false;
+            alert(`✓ ${uploaded}/${total} document(s) uploaded. Verification service unavailable.`);
+        }
+    }
+
+    function showVerificationResults(data) {
+        // Remove old results if any
+        const oldResults = document.getElementById('verificationResults');
+        if (oldResults) oldResults.remove();
+
+        const section = document.getElementById('docSection');
+        const resultsDiv = document.createElement('div');
+        resultsDiv.id = 'verificationResults';
+        resultsDiv.style.cssText = 'margin-top:24px; animation: fadeInUp 0.5s ease;';
+
+        // Header based on status
+        let headerColor, headerIcon, headerBg;
+        if (data.verification_status === 'VERIFIED') {
+            headerColor = '#059669'; headerIcon = 'fa-check-circle'; headerBg = '#ecfdf5';
+        } else if (data.verification_status === 'PARTIALLY_VERIFIED') {
+            headerColor = '#d97706'; headerIcon = 'fa-exclamation-circle'; headerBg = '#fffbeb';
+        } else {
+            headerColor = '#dc2626'; headerIcon = 'fa-times-circle'; headerBg = '#fef2f2';
+        }
+
+        let checksHtml = '';
+        data.checks.forEach(check => {
+            let icon, color, bg;
+            if (check.status === 'PASSED') { icon = 'fa-check-circle'; color = '#059669'; bg = '#f0fdf4'; }
+            else if (check.status === 'WARNING') { icon = 'fa-exclamation-triangle'; color = '#d97706'; bg = '#fffbeb'; }
+            else { icon = 'fa-times-circle'; color = '#dc2626'; bg = '#fef2f2'; }
+
+            checksHtml += `
+                <div style="display:flex; align-items:flex-start; gap:12px; padding:14px 16px; background:${bg}; border-radius:10px; margin-bottom:8px;">
+                    <i class="fas ${icon}" style="color:${color}; margin-top:2px; font-size:16px;"></i>
+                    <div style="flex:1;">
+                        <div style="font-weight:600; font-size:13px; color:#1e293b;">${check.check}</div>
+                        <div style="font-size:12px; color:#64748b; margin-top:2px;">${check.detail}</div>
+                    </div>
+                    <span style="font-size:11px; font-weight:700; color:${color}; text-transform:uppercase;">${check.status}</span>
+                </div>
+            `;
+        });
+
+        resultsDiv.innerHTML = `
+            <div style="background:${headerBg}; border:1px solid ${headerColor}22; border-radius:16px; padding:28px; text-align:center; margin-bottom:20px;">
+                <i class="fas ${headerIcon}" style="font-size:48px; color:${headerColor}; margin-bottom:12px;"></i>
+                <h3 style="font-size:22px; color:${headerColor}; margin-bottom:8px;">
+                    ${data.verification_status === 'VERIFIED' ? 'Documents Verified Successfully!' :
+                      data.verification_status === 'PARTIALLY_VERIFIED' ? 'Partial Verification' : 'Verification Failed'}
+                </h3>
+                <p style="font-size:14px; color:#475569; max-width:500px; margin:0 auto;">${data.message}</p>
+                <div style="margin-top:16px; display:flex; justify-content:center; gap:24px;">
+                    <div><span style="font-size:28px; font-weight:800; color:${headerColor};">${data.verification_score}%</span><br><span style="font-size:11px; color:#64748b;">Verification Score</span></div>
+                    <div><span style="font-size:28px; font-weight:800; color:#1e293b;">${data.checks_passed}/${data.checks_total}</span><br><span style="font-size:11px; color:#64748b;">Checks Passed</span></div>
+                    <div><span style="font-size:28px; font-weight:800; color:#1e293b;">${data.documents_uploaded}</span><br><span style="font-size:11px; color:#64748b;">Docs Uploaded</span></div>
+                </div>
+            </div>
+            <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:24px; margin-bottom:20px;">
+                <h4 style="font-size:13px; text-transform:uppercase; letter-spacing:0.5px; color:#64748b; margin-bottom:16px;">
+                    <i class="fas fa-clipboard-check" style="color:#2563eb;"></i> Verification Checks
+                </h4>
+                ${checksHtml}
+            </div>
+            ${data.verification_status === 'VERIFIED' ? `
+            <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:28px; margin-bottom:20px;">
+                <h4 style="font-size:15px; font-weight:700; color:#1e293b; margin-bottom:20px; display:flex; align-items:center; gap:8px;">
+                    <i class="fas fa-route" style="color:#2563eb;"></i> Next Steps — Loan Disbursement Process
+                </h4>
+                <div style="position:relative; padding-left:28px;">
+                    <div style="position:absolute; left:10px; top:8px; bottom:8px; width:2px; background:linear-gradient(to bottom, #2563eb, #059669);"></div>
+                    
+                    <div style="display:flex; align-items:flex-start; gap:14px; margin-bottom:24px; position:relative;">
+                        <div style="width:22px; height:22px; border-radius:50%; background:#2563eb; display:flex; align-items:center; justify-content:center; position:absolute; left:-19px; z-index:1;">
+                            <i class="fas fa-check" style="color:white; font-size:10px;"></i>
+                        </div>
+                        <div style="margin-left:16px;">
+                            <div style="font-weight:600; font-size:14px; color:#1e293b;">e-KYC Verification (Video Call)</div>
+                            <div style="font-size:12px; color:#64748b; margin-top:4px;">A bank representative will schedule a 2-minute video call to verify your identity. Keep your Aadhaar and PAN ready.</div>
+                            <div style="font-size:11px; color:#2563eb; margin-top:4px; font-weight:500;">⏱ Expected: Within 24 hours</div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; align-items:flex-start; gap:14px; margin-bottom:24px; position:relative;">
+                        <div style="width:22px; height:22px; border-radius:50%; background:#3b82f6; display:flex; align-items:center; justify-content:center; position:absolute; left:-19px; z-index:1;">
+                            <span style="color:white; font-size:10px; font-weight:700;">2</span>
+                        </div>
+                        <div style="margin-left:16px;">
+                            <div style="font-weight:600; font-size:14px; color:#1e293b;">Loan Sanction Letter</div>
+                            <div style="font-size:12px; color:#64748b; margin-top:4px;">You will receive a digital sanction letter via email/SMS with: Approved loan amount, Interest rate, EMI amount, Tenure, and Terms & Conditions.</div>
+                            <div style="font-size:11px; color:#2563eb; margin-top:4px; font-weight:500;">⏱ Expected: Within 48 hours</div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; align-items:flex-start; gap:14px; margin-bottom:24px; position:relative;">
+                        <div style="width:22px; height:22px; border-radius:50%; background:#6366f1; display:flex; align-items:center; justify-content:center; position:absolute; left:-19px; z-index:1;">
+                            <span style="color:white; font-size:10px; font-weight:700;">3</span>
+                        </div>
+                        <div style="margin-left:16px;">
+                            <div style="font-weight:600; font-size:14px; color:#1e293b;">Digital Loan Agreement Signing</div>
+                            <div style="font-size:12px; color:#64748b; margin-top:4px;">Sign the loan agreement digitally using Aadhaar-based e-Sign (OTP to your registered mobile). No physical paperwork needed.</div>
+                            <div style="font-size:11px; color:#2563eb; margin-top:4px; font-weight:500;">⏱ Expected: Same day as sanction letter</div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; align-items:flex-start; gap:14px; margin-bottom:24px; position:relative;">
+                        <div style="width:22px; height:22px; border-radius:50%; background:#8b5cf6; display:flex; align-items:center; justify-content:center; position:absolute; left:-19px; z-index:1;">
+                            <span style="color:white; font-size:10px; font-weight:700;">4</span>
+                        </div>
+                        <div style="margin-left:16px;">
+                            <div style="font-weight:600; font-size:14px; color:#1e293b;">NACH/ECS Mandate Registration</div>
+                            <div style="font-size:12px; color:#64748b; margin-top:4px;">Set up auto-debit (NACH mandate) from your bank account for monthly EMI payments. You'll receive an e-mandate link via SMS.</div>
+                            <div style="font-size:11px; color:#2563eb; margin-top:4px; font-weight:500;">⏱ Expected: Same day</div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; align-items:flex-start; gap:14px; margin-bottom:24px; position:relative;">
+                        <div style="width:22px; height:22px; border-radius:50%; background:#059669; display:flex; align-items:center; justify-content:center; position:absolute; left:-19px; z-index:1;">
+                            <i class="fas fa-indian-rupee-sign" style="color:white; font-size:10px;"></i>
+                        </div>
+                        <div style="margin-left:16px;">
+                            <div style="font-weight:600; font-size:14px; color:#1e293b;">Loan Amount Disbursement</div>
+                            <div style="font-size:12px; color:#64748b; margin-top:4px;">The approved loan amount will be transferred directly to your registered bank account via NEFT/RTGS/IMPS.</div>
+                            <div style="font-size:11px; color:#059669; margin-top:4px; font-weight:600;">💰 Disbursement: Within 24-48 hours after agreement signing</div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; align-items:flex-start; gap:14px; position:relative;">
+                        <div style="width:22px; height:22px; border-radius:50%; background:#0ea5e9; display:flex; align-items:center; justify-content:center; position:absolute; left:-19px; z-index:1;">
+                            <i class="fas fa-calendar-check" style="color:white; font-size:10px;"></i>
+                        </div>
+                        <div style="margin-left:16px;">
+                            <div style="font-weight:600; font-size:14px; color:#1e293b;">EMI Starts</div>
+                            <div style="font-size:12px; color:#64748b; margin-top:4px;">Your first EMI will be debited on the 5th of next month. You'll receive a repayment schedule with complete EMI breakup (Principal + Interest).</div>
+                            <div style="font-size:11px; color:#64748b; margin-top:4px; font-weight:500;">📅 First EMI: 5th of next month</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background:linear-gradient(135deg, #f0f9ff, #e0f2fe); border:1px solid #bae6fd; border-radius:12px; padding:24px; margin-bottom:20px;">
+                <h4 style="font-size:14px; font-weight:700; color:#0c4a6e; margin-bottom:12px;">
+                    <i class="fas fa-info-circle"></i> Important Information
+                </h4>
+                <ul style="list-style:none; padding:0; font-size:13px; color:#1e3a5f; line-height:2;">
+                    <li>• <strong>Loan Account Number</strong> will be shared via SMS/email after disbursement</li>
+                    <li>• <strong>Insurance:</strong> Loan protection insurance is optional (not mandatory)</li>
+                    <li>• <strong>Prepayment:</strong> You can prepay/foreclose after 6 months with no penalty (as per RBI guidelines)</li>
+                    <li>• <strong>Customer Care:</strong> Call 1800-XXX-XXXX (toll-free) for any queries</li>
+                    <li>• <strong>Track Status:</strong> Use Application ID to track your loan status anytime</li>
+                </ul>
+            </div>
+
+            <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:20px; text-align:center;">
+                <p style="font-size:13px; color:#64748b; margin-bottom:12px;">Save your Application ID for future reference</p>
+                <div style="background:#f1f5f9; padding:12px 20px; border-radius:8px; display:inline-block; font-family:monospace; font-size:16px; font-weight:700; color:#1e293b; letter-spacing:1px;">
+                    ${data.application_id}
+                </div>
+            </div>
+            ` : `
+            <div style="background:white; border:1px solid #e2e8f0; border-radius:12px; padding:24px;">
+                <h4 style="font-size:14px; font-weight:600; color:#991b1b; margin-bottom:12px;"><i class="fas fa-exclamation-triangle"></i> Action Required</h4>
+                <ul style="list-style:none; padding:0; font-size:13px; color:#475569; line-height:2;">
+                    <li>• Re-upload documents that failed verification with clear, readable scans</li>
+                    <li>• Ensure all documents match the information provided in your application form</li>
+                    <li>• Contact support at 1800-XXX-XXXX if you need assistance</li>
+                </ul>
+            </div>
+            `}
+        `;
+
+        section.appendChild(resultsDiv);
+        resultsDiv.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMI Calculator - LoanSmart AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',sans-serif; background:#f8fafc; color:#1e293b; }
+        .navbar { background:#fff; padding:16px 40px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; }
+        .logo { display:flex; align-items:center; gap:10px; }
+        .logo-icon { width:40px; height:40px; background:linear-gradient(135deg,#1a56db,#0ea5e9); border-radius:10px; display:flex; align-items:center; justify-content:center; color:white; font-size:18px; }
+        .logo-text { font-size:20px; font-weight:700; } .logo-text span { color:#1a56db; }
+        .nav-links a { color:#475569; text-decoration:none; font-size:14px; font-weight:500; padding:8px 16px; border-radius:8px; margin-left:8px; } .nav-links a:hover { background:#dbeafe; color:#1a56db; }
+        .container { max-width:1000px; margin:40px auto; padding:0 20px; }
+        .page-header { text-align:center; margin-bottom:40px; }
+        .page-header h1 { font-size:32px; font-weight:800; margin-bottom:8px; }
+        .page-header p { color:#64748b; font-size:16px; }
+        .calc-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+        .card { background:#fff; border-radius:16px; padding:32px; border:1px solid #e2e8f0; box-shadow:0 4px 6px rgba(0,0,0,0.04); }
+        .card h3 { font-size:16px; font-weight:700; margin-bottom:20px; display:flex; align-items:center; gap:8px; }
+        .card h3 i { color:#2563eb; }
+        .form-group { margin-bottom:20px; }
+        .form-group label { display:block; font-size:13px; font-weight:600; color:#475569; margin-bottom:6px; }
+        .form-group input, .form-group select { width:100%; padding:12px 16px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:15px; font-family:inherit; }
+        .form-group input:focus { outline:none; border-color:#2563eb; box-shadow:0 0 0 4px rgba(37,99,235,0.08); }
+        .range-group { margin-bottom:20px; }
+        .range-group label { display:flex; justify-content:space-between; font-size:13px; font-weight:600; color:#475569; margin-bottom:8px; }
+        .range-group input[type="range"] { width:100%; accent-color:#2563eb; }
+        .range-value { font-weight:700; color:#1a56db; }
+        .btn-calc { width:100%; padding:14px; background:linear-gradient(135deg,#1a56db,#0ea5e9); color:white; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; font-family:inherit; transition:all 0.2s; }
+        .btn-calc:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(26,86,219,0.3); }
+        .result-box { text-align:center; padding:24px; background:linear-gradient(135deg,#f0f9ff,#dbeafe); border-radius:12px; margin-bottom:20px; }
+        .emi-value { font-size:42px; font-weight:800; color:#1a56db; }
+        .emi-label { font-size:12px; color:#64748b; text-transform:uppercase; letter-spacing:1px; }
+        .breakdown { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:16px; }
+        .breakdown-item { text-align:center; padding:12px; background:white; border-radius:8px; border:1px solid #e2e8f0; }
+        .breakdown-item .value { font-size:18px; font-weight:700; color:#1e293b; }
+        .breakdown-item .label { font-size:11px; color:#64748b; margin-top:4px; }
+        .schedule-table { width:100%; border-collapse:collapse; margin-top:16px; font-size:12px; }
+        .schedule-table th { background:#f1f5f9; padding:10px 8px; text-align:left; font-weight:600; color:#475569; text-transform:uppercase; font-size:10px; letter-spacing:0.5px; }
+        .schedule-table td { padding:10px 8px; border-bottom:1px solid #f1f5f9; color:#334155; }
+        .schedule-table tr:hover { background:#f8fafc; }
+        .schedule-scroll { max-height:400px; overflow-y:auto; border-radius:8px; border:1px solid #e2e8f0; }
+        @media(max-width:768px) { .calc-grid { grid-template-columns:1fr; } .breakdown { grid-template-columns:1fr; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo"><div class="logo-icon"><i class="fas fa-shield-halved"></i></div><div class="logo-text">Loan<span>Smart</span> AI</div></div>
+        <div class="nav-links"><a href="/"><i class="fas fa-home"></i> Home</a><a href="/emi"><i class="fas fa-calculator"></i> EMI</a><a href="/eligibility"><i class="fas fa-check-double"></i> Eligibility</a><a href="/track"><i class="fas fa-search"></i> Track</a></div>
+    </nav>
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-calculator" style="color:#2563eb;"></i> EMI Calculator</h1>
+            <p>Calculate your monthly EMI and view the complete repayment schedule</p>
+        </div>
+        <div class="calc-grid">
+            <div class="card">
+                <h3><i class="fas fa-sliders-h"></i> Loan Parameters</h3>
+                <div class="range-group">
+                    <label>Loan Amount <span class="range-value" id="amtDisplay">₹5,00,000</span></label>
+                    <input type="range" id="loanAmount" min="50000" max="5000000" step="10000" value="500000" oninput="updateDisplay()">
+                </div>
+                <div class="range-group">
+                    <label>Interest Rate (p.a.) <span class="range-value" id="rateDisplay">8.5%</span></label>
+                    <input type="range" id="interestRate" min="5" max="24" step="0.5" value="8.5" oninput="updateDisplay()">
+                </div>
+                <div class="range-group">
+                    <label>Tenure <span class="range-value" id="tenureDisplay">36 months (3 years)</span></label>
+                    <input type="range" id="tenure" min="6" max="360" step="6" value="36" oninput="updateDisplay()">
+                </div>
+                <button class="btn-calc" onclick="calculateEMI()"><i class="fas fa-calculator"></i> Calculate EMI</button>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-chart-pie"></i> EMI Breakdown</h3>
+                <div id="resultArea">
+                    <div class="result-box">
+                        <div class="emi-label">Your Monthly EMI</div>
+                        <div class="emi-value" id="emiValue">₹—</div>
+                    </div>
+                    <div class="breakdown">
+                        <div class="breakdown-item"><div class="value" id="totalPayment">—</div><div class="label">Total Payment</div></div>
+                        <div class="breakdown-item"><div class="value" id="totalInterest">—</div><div class="label">Total Interest</div></div>
+                        <div class="breakdown-item"><div class="value" id="loanAmtDisplay">—</div><div class="label">Principal</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card" style="margin-top:24px;">
+            <h3><i class="fas fa-list-ol"></i> Repayment Schedule</h3>
+            <div class="schedule-scroll">
+                <table class="schedule-table">
+                    <thead><tr><th>Month</th><th>EMI (₹)</th><th>Principal (₹)</th><th>Interest (₹)</th><th>Balance (₹)</th></tr></thead>
+                    <tbody id="scheduleBody"><tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:40px;">Click "Calculate EMI" to see repayment schedule</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        function updateDisplay() {
+            const amt = document.getElementById('loanAmount').value;
+            const rate = document.getElementById('interestRate').value;
+            const tenure = document.getElementById('tenure').value;
+            document.getElementById('amtDisplay').textContent = '₹' + parseInt(amt).toLocaleString('en-IN');
+            document.getElementById('rateDisplay').textContent = rate + '%';
+            document.getElementById('tenureDisplay').textContent = tenure + ' months (' + (tenure/12).toFixed(1) + ' years)';
+        }
+        async function calculateEMI() {
+            const amt = parseInt(document.getElementById('loanAmount').value);
+            const rate = parseFloat(document.getElementById('interestRate').value);
+            const tenure = parseInt(document.getElementById('tenure').value);
+            const res = await fetch('/api/emi/calculate', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({loan_amount:amt, interest_rate:rate, tenure_months:tenure}) });
+            const data = await res.json();
+            document.getElementById('emiValue').textContent = '₹' + data.monthly_emi.toLocaleString('en-IN');
+            document.getElementById('totalPayment').textContent = '₹' + (data.total_payment/100000).toFixed(1) + 'L';
+            document.getElementById('totalInterest').textContent = '₹' + (data.total_interest/100000).toFixed(2) + 'L';
+            document.getElementById('loanAmtDisplay').textContent = '₹' + (data.loan_amount/100000).toFixed(1) + 'L';
+            let html = '';
+            data.schedule.forEach(row => { html += `<tr><td>${row.month}</td><td>${row.emi.toLocaleString('en-IN')}</td><td>${row.principal.toLocaleString('en-IN')}</td><td>${row.interest.toLocaleString('en-IN')}</td><td>${row.balance.toLocaleString('en-IN')}</td></tr>`; });
+            document.getElementById('scheduleBody').innerHTML = html;
+        }
+        updateDisplay();
+        calculateEMI();
+    </script>
+</body>
+</html>

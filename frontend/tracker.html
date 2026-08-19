@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoanSmart AI - Loan Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',sans-serif; background:#f8fafc; color:#1e293b; }
+        .navbar { background:#fff; padding:16px 40px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; position:sticky; top:0; z-index:100; }
+        .logo { display:flex; align-items:center; gap:10px; }
+        .logo-icon { width:40px; height:40px; background:linear-gradient(135deg,#1a56db,#0ea5e9); border-radius:10px; display:flex; align-items:center; justify-content:center; color:white; font-size:18px; }
+        .logo-text { font-size:20px; font-weight:700; } .logo-text span { color:#1a56db; }
+        .nav-links a { color:#475569; text-decoration:none; font-size:14px; font-weight:500; padding:8px 16px; border-radius:8px; margin-left:8px; }
+        .nav-links a:hover { background:#dbeafe; color:#1a56db; }
+        .nav-links a.active { background:#1a56db; color:white; }
+        .container { max-width:1100px; margin:40px auto; padding:0 20px; }
+        .page-header { margin-bottom:32px; }
+        .page-header h1 { font-size:28px; font-weight:800; color:#0f172a; }
+        .page-header p { font-size:14px; color:#64748b; margin-top:4px; }
+
+        .search-box { display:flex; gap:12px; margin-bottom:32px; }
+        .search-box input { flex:1; padding:14px 20px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:15px; font-family:inherit; }
+        .search-box input:focus { outline:none; border-color:#1a56db; box-shadow:0 0 0 3px rgba(26,86,219,0.08); }
+        .search-box button { padding:14px 28px; background:linear-gradient(135deg,#1a56db,#0ea5e9); color:white; border:none; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit; }
+        .search-box button:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(26,86,219,0.3); }
+
+        .card { background:white; border-radius:16px; padding:28px; border:1px solid #e2e8f0; box-shadow:0 2px 8px rgba(0,0,0,0.04); margin-bottom:20px; }
+        .card h3 { font-size:15px; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+        .card h3 i { color:#1a56db; }
+
+        .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+        .stat-card { background:white; border-radius:12px; padding:20px; border:1px solid #e2e8f0; text-align:center; }
+        .stat-card .value { font-size:28px; font-weight:800; margin-bottom:4px; }
+        .stat-card .label { font-size:11px; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; }
+        .stat-card.green .value { color:#059669; }
+        .stat-card.blue .value { color:#1a56db; }
+        .stat-card.red .value { color:#dc2626; }
+        .stat-card.orange .value { color:#d97706; }
+
+        .health-bar { display:flex; align-items:center; gap:16px; padding:20px; background:#f8fafc; border-radius:12px; margin-bottom:20px; }
+        .health-score { font-size:48px; font-weight:800; }
+        .health-info { flex:1; }
+        .health-info .rating { font-size:14px; font-weight:600; }
+        .health-info .desc { font-size:12px; color:#64748b; margin-top:4px; }
+        .health-meter { width:100%; height:8px; background:#e2e8f0; border-radius:4px; overflow:hidden; margin-top:8px; }
+        .health-meter-fill { height:100%; border-radius:4px; transition:width 1s ease; }
+
+        .cashflow-box { display:flex; align-items:center; gap:20px; padding:16px 20px; background:#f0f9ff; border:1px solid #bae6fd; border-radius:10px; margin-bottom:20px; }
+        .cashflow-box i { font-size:24px; color:#0284c7; }
+        .cashflow-box .info { flex:1; }
+        .cashflow-box .title { font-size:13px; font-weight:600; color:#0c4a6e; }
+        .cashflow-box .desc { font-size:12px; color:#64748b; }
+
+        table { width:100%; border-collapse:collapse; }
+        th { text-align:left; font-size:11px; text-transform:uppercase; color:#64748b; padding:12px 16px; border-bottom:2px solid #e2e8f0; letter-spacing:0.5px; }
+        td { padding:14px 16px; border-bottom:1px solid #f1f5f9; font-size:13px; }
+        tr:hover { background:#f8fafc; }
+        .badge { display:inline-block; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700; text-transform:uppercase; }
+        .badge.paid { background:#d1fae5; color:#065f46; }
+        .badge.late { background:#fef3c7; color:#92400e; }
+        .badge.bounced { background:#fee2e2; color:#991b1b; }
+        .badge.upcoming { background:#e0e7ff; color:#3730a3; }
+
+        .demo-controls { background:#fffbeb; border:1px solid #fde68a; border-radius:12px; padding:20px; margin-bottom:24px; }
+        .demo-controls h4 { font-size:13px; color:#92400e; margin-bottom:12px; }
+        .demo-controls button { padding:10px 18px; border-radius:8px; border:none; font-size:13px; font-weight:600; cursor:pointer; margin-right:8px; margin-bottom:8px; font-family:inherit; }
+        .btn-sim { background:#2563eb; color:white; }
+        .btn-pay { background:#059669; color:white; }
+        .btn-bounce { background:#dc2626; color:white; }
+
+        .empty-state { text-align:center; padding:60px; color:#94a3b8; }
+        .empty-state i { font-size:48px; margin-bottom:16px; }
+        .empty-state h3 { font-size:18px; color:#475569; margin-bottom:8px; }
+
+        @media (max-width:768px) { .stats-grid { grid-template-columns:1fr 1fr; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-shield-halved"></i></div>
+            <div class="logo-text">Loan<span>Smart</span> AI</div>
+        </div>
+        <div class="nav-links">
+            <a href="/"><i class="fas fa-home"></i> Home</a>
+            <a href="/tracker" class="active"><i class="fas fa-chart-line"></i> Tracker</a>
+            <a href="/admin"><i class="fas fa-user-shield"></i> Admin</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-chart-line"></i> Loan Repayment Tracker</h1>
+            <p>Track your EMI payments, check repayment health, and monitor your loan lifecycle</p>
+        </div>
+
+        <!-- Search / Create Loan -->
+        <div class="search-box">
+            <input type="text" id="loanIdInput" placeholder="Enter Loan ID (e.g., LN-XXXXXXXX) or Application ID">
+            <button onclick="searchLoan()"><i class="fas fa-search"></i> Track</button>
+            <button onclick="showCreateLoan()" style="background:#059669;"><i class="fas fa-plus"></i> Create Loan</button>
+        </div>
+
+        <!-- Create Loan Form (hidden by default) -->
+        <div class="card" id="createLoanForm" style="display:none;">
+            <h3><i class="fas fa-plus-circle"></i> Create Loan Account (After Approval)</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div><label style="font-size:12px;font-weight:600;color:#475569;">Application ID</label><input id="cl_appId" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;margin-top:4px;" placeholder="LA-20260819-XXXXXXXX"></div>
+                <div><label style="font-size:12px;font-weight:600;color:#475569;">Loan Amount (₹)</label><input id="cl_amount" type="number" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;margin-top:4px;" value="200000"></div>
+                <div><label style="font-size:12px;font-weight:600;color:#475569;">Interest Rate (%)</label><input id="cl_rate" type="number" step="0.1" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;margin-top:4px;" value="10"></div>
+                <div><label style="font-size:12px;font-weight:600;color:#475569;">Tenure (Months)</label><input id="cl_tenure" type="number" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;margin-top:4px;" value="36"></div>
+                <div><label style="font-size:12px;font-weight:600;color:#475569;">Salary Date (Day)</label><input id="cl_salDay" type="number" min="1" max="28" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;margin-top:4px;" value="1"></div>
+                <div><label style="font-size:12px;font-weight:600;color:#475569;">EMI Date (Day)</label><input id="cl_emiDay" type="number" min="1" max="28" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:8px;margin-top:4px;" value="5"></div>
+            </div>
+            <button onclick="createLoan()" style="margin-top:16px;padding:12px 24px;background:#059669;color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;">Create Loan Account & Disburse</button>
+        </div>
+
+        <!-- Loan Details Section -->
+        <div id="loanDetails" style="display:none;">
+            <!-- Stats -->
+            <div class="stats-grid" id="statsGrid"></div>
+
+            <!-- Health Score -->
+            <div class="card" id="healthCard"></div>
+
+            <!-- Cash Flow -->
+            <div id="cashflowCard"></div>
+
+            <!-- Demo Controls -->
+            <div class="demo-controls">
+                <h4><i class="fas fa-play-circle"></i> Simulation Controls (Demo Mode)</h4>
+                <button class="btn-sim" onclick="simulateMonths(3)">Simulate 3 Months</button>
+                <button class="btn-sim" onclick="simulateMonths(6)">Simulate 6 Months</button>
+                <button class="btn-sim" onclick="simulateMonths(12)">Simulate 12 Months</button>
+                <button class="btn-pay" onclick="payNextEMI('PAID')">Pay Next EMI (On Time)</button>
+                <button class="btn-bounce" onclick="payNextEMI('BOUNCED')">Simulate Bounce</button>
+            </div>
+
+            <!-- Payment History -->
+            <div class="card">
+                <h3><i class="fas fa-history"></i> Payment History</h3>
+                <table>
+                    <thead>
+                        <tr><th>EMI #</th><th>Due Date</th><th>Paid Date</th><th>Amount</th><th>Principal</th><th>Interest</th><th>Penalty</th><th>Status</th><th>Balance</th></tr>
+                    </thead>
+                    <tbody id="scheduleTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState">
+            <i class="fas fa-search"></i>
+            <h3>No Loan Selected</h3>
+            <p>Enter a Loan ID above to track, or create a new loan account</p>
+        </div>
+    </div>
+
+    <script>
+    let currentLoanId = null;
+
+    function showCreateLoan() {
+        const form = document.getElementById('createLoanForm');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
+    async function createLoan() {
+        const data = {
+            application_id: document.getElementById('cl_appId').value,
+            loan_amount: parseFloat(document.getElementById('cl_amount').value),
+            interest_rate: parseFloat(document.getElementById('cl_rate').value),
+            tenure_months: parseInt(document.getElementById('cl_tenure').value),
+            salary_date: parseInt(document.getElementById('cl_salDay').value),
+            emi_date: parseInt(document.getElementById('cl_emiDay').value)
+        };
+        const res = await fetch('/api/loans/create', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+        const loan = await res.json();
+        if (loan.loan_id) {
+            currentLoanId = loan.loan_id;
+            document.getElementById('loanIdInput').value = loan.loan_id;
+            document.getElementById('createLoanForm').style.display = 'none';
+            alert(`Loan Created! ID: ${loan.loan_id}\nEMI: ₹${loan.emi_amount.toLocaleString()}/month`);
+            loadLoanDetails(loan.loan_id);
+        } else {
+            alert(loan.error || 'Error creating loan');
+        }
+    }
+
+    async function searchLoan() {
+        const id = document.getElementById('loanIdInput').value.trim();
+        if (!id) return alert('Enter a Loan ID');
+        currentLoanId = id;
+        await loadLoanDetails(id);
+    }
+
+    async function loadLoanDetails(loanId) {
+        const res = await fetch(`/api/loans/${loanId}`);
+        const data = await res.json();
+        if (data.error) { alert(data.error); return; }
+
+        document.getElementById('emptyState').style.display = 'none';
+        document.getElementById('loanDetails').style.display = 'block';
+
+        // Stats
+        const sg = document.getElementById('statsGrid');
+        sg.innerHTML = `
+            <div class="stat-card blue"><div class="value">₹${data.emi_amount.toLocaleString()}</div><div class="label">Monthly EMI</div></div>
+            <div class="stat-card green"><div class="value">₹${data.summary.total_paid.toLocaleString()}</div><div class="label">Total Paid</div></div>
+            <div class="stat-card orange"><div class="value">₹${data.summary.outstanding_principal.toLocaleString()}</div><div class="label">Outstanding</div></div>
+            <div class="stat-card red"><div class="value">${data.summary.total_bounces}</div><div class="label">Bounces</div></div>
+        `;
+
+        // Health
+        const hc = document.getElementById('healthCard');
+        const h = data.health;
+        hc.innerHTML = `
+            <h3><i class="fas fa-heartbeat"></i> Repayment Health</h3>
+            <div class="health-bar">
+                <div class="health-score" style="color:${h.color}">${h.score}%</div>
+                <div class="health-info">
+                    <div class="rating" style="color:${h.color}">${h.rating}</div>
+                    <div class="desc">On Time: ${h.on_time_payments} | Late: ${h.late_payments} | Bounced: ${h.bounced_payments}</div>
+                    <div class="health-meter"><div class="health-meter-fill" style="width:${h.score}%;background:${h.color}"></div></div>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;font-size:12px;text-align:center;">
+                <div style="padding:12px;background:#f0fdf4;border-radius:8px;"><strong style="color:#059669;font-size:18px;">${data.summary.emis_paid}</strong><br>EMIs Paid</div>
+                <div style="padding:12px;background:#eff6ff;border-radius:8px;"><strong style="color:#2563eb;font-size:18px;">${data.summary.emis_remaining}</strong><br>EMIs Left</div>
+                <div style="padding:12px;background:#fef2f2;border-radius:8px;"><strong style="color:#dc2626;font-size:18px;">₹${data.summary.total_penalty.toLocaleString()}</strong><br>Penalties</div>
+            </div>
+        `;
+
+        // Cash Flow
+        const cf = data.cash_flow;
+        document.getElementById('cashflowCard').innerHTML = `
+            <div class="cashflow-box">
+                <i class="fas fa-exchange-alt"></i>
+                <div class="info">
+                    <div class="title">Salary-to-EMI Cash Flow: ${cf.flow_status}</div>
+                    <div class="desc">Salary on ${cf.salary_date}th → EMI on ${cf.emi_date}th (${cf.days_after_salary} days gap) | ${cf.recommendation}</div>
+                </div>
+            </div>
+        `;
+
+        // Schedule Table
+        const tbody = document.getElementById('scheduleTable');
+        tbody.innerHTML = '';
+        data.schedule.forEach(s => {
+            const badgeCls = s.status === 'PAID' ? 'paid' : s.status === 'LATE' ? 'late' : s.status === 'BOUNCED' ? 'bounced' : 'upcoming';
+            tbody.innerHTML += `<tr>
+                <td><strong>#${s.emi_number}</strong></td>
+                <td>${s.due_date}</td>
+                <td>${s.paid_date || '—'}</td>
+                <td>₹${s.emi_amount.toLocaleString()}</td>
+                <td>₹${s.principal.toLocaleString()}</td>
+                <td>₹${s.interest.toLocaleString()}</td>
+                <td style="color:${s.penalty > 0 ? '#dc2626' : '#64748b'}">₹${s.penalty}</td>
+                <td><span class="badge ${badgeCls}">${s.status}</span></td>
+                <td>₹${s.outstanding_after.toLocaleString()}</td>
+            </tr>`;
+        });
+    }
+
+    async function simulateMonths(months) {
+        if (!currentLoanId) return alert('Load a loan first');
+        const res = await fetch(`/api/loans/${currentLoanId}/simulate`, {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({months})
+        });
+        await res.json();
+        loadLoanDetails(currentLoanId);
+    }
+
+    async function payNextEMI(status) {
+        if (!currentLoanId) return alert('Load a loan first');
+        const res = await fetch(`/api/loans/${currentLoanId}`);
+        const loan = await res.json();
+        const nextEmi = loan.schedule.find(s => s.status === 'UPCOMING');
+        if (!nextEmi) return alert('No upcoming EMIs');
+
+        const today = new Date().toISOString().split('T')[0];
+        await fetch(`/api/loans/${currentLoanId}/pay`, {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({emi_number: nextEmi.emi_number, status, paid_date: today})
+        });
+        loadLoanDetails(currentLoanId);
+    }
+    </script>
+</body>
+</html>

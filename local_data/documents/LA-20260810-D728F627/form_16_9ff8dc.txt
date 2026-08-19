@@ -1,0 +1,62 @@
+============================================
+              FORM 16
+   CERTIFICATE UNDER SECTION 203 OF THE
+         INCOME TAX ACT, 1961
+============================================
+
+PART A - CERTIFICATE
+
+Certificate No:         TDS/BLR/2025-26/78432
+Assessment Year:        2025-2026
+Period:                 01/04/2025 to 31/03/2026
+
+EMPLOYER DETAILS:
+  Name:                 INFOSYS LIMITED
+  TAN:                  BLRI12345E
+  PAN:                  AABCI1234C
+  Address:              Electronics City, Bangalore - 560100
+
+EMPLOYEE DETAILS:
+  Name:                 RAJESH KUMAR SHARMA
+  PAN:                  ABCPK1234F
+  Designation:          Senior Software Engineer
+  Employee ID:          INF-BLR-78432
+
+============================================
+PART B - DETAILS OF SALARY & TAX DEDUCTED
+============================================
+
+1. Gross Salary (Section 17(1))
+   (a) Salary as per provisions         6,96,000
+   (b) Value of perquisites                    0
+   (c) Profit in lieu of salary                0
+   -------------------------------------------
+   Gross Total Income                    6,96,000
+
+2. Less: Deductions under Chapter VI-A
+   (a) Section 80C (PF + LIC + ELSS)    1,50,000
+   (b) Section 80D (Health Insurance)      25,000
+   -------------------------------------------
+   Total Deductions                      1,75,000
+
+3. Taxable Income                        5,21,000
+
+4. Tax on Taxable Income                   27,300
+5. Education Cess (4%)                      1,092
+6. Total Tax Payable                       28,392
+
+7. Tax Deducted at Source (TDS)            35,280
+8. Tax Refund Due                           6,888
+
+============================================
+VERIFICATION:
+I, Authorized Signatory of Infosys Limited,
+certify the above information is correct.
+
+Date: 15/06/2026
+Place: Bangalore
+
+============================================
+This is a SAMPLE TEST DOCUMENT for system
+testing purposes only. Not a real Form 16.
+============================================

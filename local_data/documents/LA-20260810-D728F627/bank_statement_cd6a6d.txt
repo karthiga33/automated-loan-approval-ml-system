@@ -1,0 +1,63 @@
+============================================
+         STATE BANK OF INDIA
+       ACCOUNT STATEMENT
+============================================
+
+Account Holder: RAJESH KUMAR SHARMA
+Account Number: 39876543210
+IFSC Code:      SBIN0001234
+Branch:         Koramangala, Bangalore
+Statement Period: 01/02/2026 to 31/07/2026
+
+--------------------------------------------
+Date        | Description          | Debit    | Credit   | Balance
+--------------------------------------------
+01/02/2026  | Opening Balance      |          |          | 1,25,340
+05/02/2026  | NEFT CR - SALARY     |          | 56,250   | 1,81,590
+10/02/2026  | EMI - HDFC Auto Loan | 12,500   |          | 1,69,090
+15/02/2026  | UPI - Rent Payment   | 18,000   |          | 1,51,090
+25/02/2026  | Electricity Bill     | 2,350    |          | 1,48,740
+28/02/2026  | Mutual Fund SIP      | 5,000    |          | 1,43,740
+--------------------------------------------
+05/03/2026  | NEFT CR - SALARY     |          | 56,250   | 1,99,990
+10/03/2026  | EMI - HDFC Auto Loan | 12,500   |          | 1,87,490
+15/03/2026  | UPI - Rent Payment   | 18,000   |          | 1,69,490
+20/03/2026  | Amazon Shopping      | 4,500    |          | 1,64,990
+28/03/2026  | Mutual Fund SIP      | 5,000    |          | 1,59,990
+--------------------------------------------
+05/04/2026  | NEFT CR - SALARY     |          | 58,000   | 2,17,990
+10/04/2026  | EMI - HDFC Auto Loan | 12,500   |          | 2,05,490
+15/04/2026  | UPI - Rent Payment   | 18,000   |          | 1,87,490
+22/04/2026  | Insurance Premium    | 8,500    |          | 1,78,990
+28/04/2026  | Mutual Fund SIP      | 5,000    |          | 1,73,990
+--------------------------------------------
+05/05/2026  | NEFT CR - SALARY     |          | 58,000   | 2,31,990
+10/05/2026  | EMI - HDFC Auto Loan | 12,500   |          | 2,19,490
+15/05/2026  | UPI - Rent Payment   | 18,000   |          | 2,01,490
+18/05/2026  | Medical Expense      | 3,200    |          | 1,98,290
+28/05/2026  | Mutual Fund SIP      | 5,000    |          | 1,93,290
+--------------------------------------------
+05/06/2026  | NEFT CR - SALARY     |          | 58,000   | 2,51,290
+10/06/2026  | EMI - HDFC Auto Loan | 12,500   |          | 2,38,790
+15/06/2026  | UPI - Rent Payment   | 18,000   |          | 2,20,790
+28/06/2026  | Mutual Fund SIP      | 5,000    |          | 2,15,790
+--------------------------------------------
+05/07/2026  | NEFT CR - SALARY     |          | 58,000   | 2,73,790
+10/07/2026  | EMI - HDFC Auto Loan | 12,500   |          | 2,61,290
+15/07/2026  | UPI - Rent Payment   | 18,000   |          | 2,43,290
+28/07/2026  | Mutual Fund SIP      | 5,000    |          | 2,38,290
+31/07/2026  | Closing Balance      |          |          | 2,38,290
+--------------------------------------------
+
+SUMMARY:
+  Total Credits:            3,44,500
+  Total Debits:             2,31,550
+  Average Monthly Balance:  1,95,430
+  Salary Credits (6 months): 56,250 + 56,250 + 58,000 + 58,000 + 58,000 + 58,000
+  EMI Obligations:          12,500/month (HDFC Auto Loan)
+  Bounced Cheques:          0
+
+============================================
+This is a SAMPLE TEST DOCUMENT for system
+testing purposes only.
+============================================

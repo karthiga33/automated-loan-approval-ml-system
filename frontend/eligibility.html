@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eligibility Check - LoanSmart AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',sans-serif; background:#f8fafc; color:#1e293b; }
+        .navbar { background:#fff; padding:16px 40px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; }
+        .logo { display:flex; align-items:center; gap:10px; }
+        .logo-icon { width:40px; height:40px; background:linear-gradient(135deg,#1a56db,#0ea5e9); border-radius:10px; display:flex; align-items:center; justify-content:center; color:white; font-size:18px; }
+        .logo-text { font-size:20px; font-weight:700; } .logo-text span { color:#1a56db; }
+        .nav-links a { color:#475569; text-decoration:none; font-size:14px; font-weight:500; padding:8px 16px; border-radius:8px; margin-left:8px; } .nav-links a:hover { background:#dbeafe; color:#1a56db; }
+        .container { max-width:800px; margin:40px auto; padding:0 20px; }
+        .page-header { text-align:center; margin-bottom:40px; }
+        .page-header h1 { font-size:32px; font-weight:800; margin-bottom:8px; }
+        .page-header p { color:#64748b; font-size:16px; }
+        .card { background:#fff; border-radius:16px; padding:32px; border:1px solid #e2e8f0; box-shadow:0 4px 6px rgba(0,0,0,0.04); margin-bottom:24px; }
+        .card h3 { font-size:16px; font-weight:700; margin-bottom:20px; display:flex; align-items:center; gap:8px; } .card h3 i { color:#2563eb; }
+        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+        .form-group { margin-bottom:16px; }
+        .form-group label { display:block; font-size:13px; font-weight:600; color:#475569; margin-bottom:6px; }
+        .form-group input { width:100%; padding:12px 16px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:15px; font-family:inherit; }
+        .form-group input:focus { outline:none; border-color:#2563eb; box-shadow:0 0 0 4px rgba(37,99,235,0.08); }
+        .hint { font-size:11px; color:#94a3b8; margin-top:4px; }
+        .btn-check { width:100%; padding:14px; background:linear-gradient(135deg,#1a56db,#0ea5e9); color:white; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; font-family:inherit; margin-top:8px; }
+        .btn-check:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(26,86,219,0.3); }
+        .result-section { display:none; animation:fadeIn 0.5s; }
+        .result-section.show { display:block; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        .eligible-box { text-align:center; padding:32px; border-radius:16px; margin-bottom:20px; }
+        .eligible-box.yes { background:linear-gradient(135deg,#ecfdf5,#d1fae5); border:1px solid #86efac; }
+        .eligible-box.no { background:linear-gradient(135deg,#fef2f2,#fee2e2); border:1px solid #fca5a5; }
+        .eligible-box h2 { font-size:24px; margin-bottom:8px; }
+        .eligible-box.yes h2 { color:#059669; }
+        .eligible-box.no h2 { color:#dc2626; }
+        .max-amount { font-size:48px; font-weight:800; color:#1a56db; margin:12px 0; }
+        .details-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px; }
+        .detail-item { background:white; padding:16px; border-radius:10px; border:1px solid #e2e8f0; text-align:center; }
+        .detail-item .value { font-size:20px; font-weight:700; color:#1e293b; }
+        .detail-item .label { font-size:11px; color:#64748b; margin-top:4px; }
+        .tips { margin-top:20px; }
+        .tip-item { display:flex; align-items:flex-start; gap:10px; padding:12px 16px; background:#fffbeb; border-radius:8px; margin-bottom:8px; font-size:13px; color:#92400e; }
+        .tip-item i { color:#f59e0b; margin-top:2px; }
+        @media(max-width:768px) { .form-grid,.details-grid { grid-template-columns:1fr; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo"><div class="logo-icon"><i class="fas fa-shield-halved"></i></div><div class="logo-text">Loan<span>Smart</span> AI</div></div>
+        <div class="nav-links"><a href="/"><i class="fas fa-home"></i> Home</a><a href="/emi"><i class="fas fa-calculator"></i> EMI</a><a href="/eligibility"><i class="fas fa-check-double"></i> Eligibility</a><a href="/track"><i class="fas fa-search"></i> Track</a></div>
+    </nav>
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-check-double" style="color:#059669;"></i> Eligibility Pre-Check</h1>
+            <p>Find out how much loan you're eligible for — in 10 seconds, no documents needed</p>
+        </div>
+        <div class="card">
+            <h3><i class="fas fa-user-check"></i> Quick Details</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Monthly Income (₹)</label>
+                    <input type="number" id="monthlyIncome" placeholder="e.g., 60000" value="60000">
+                    <span class="hint">Net take-home salary per month</span>
+                </div>
+                <div class="form-group">
+                    <label>Existing EMIs (₹/month)</label>
+                    <input type="number" id="existingEmi" placeholder="e.g., 12000" value="0">
+                    <span class="hint">Total of all current loan EMIs</span>
+                </div>
+                <div class="form-group">
+                    <label>Your Age</label>
+                    <input type="number" id="ageInput" min="18" max="65" placeholder="e.g., 32" value="32">
+                </div>
+                <div class="form-group">
+                    <label>Approximate CIBIL Score</label>
+                    <input type="number" id="cibilInput" min="300" max="900" placeholder="e.g., 730" value="730">
+                    <span class="hint">300-900 (check on cibil.com if unsure)</span>
+                </div>
+            </div>
+            <button class="btn-check" onclick="checkEligibility()"><i class="fas fa-bolt"></i> Check My Eligibility</button>
+        </div>
+        <div class="result-section" id="resultSection">
+            <div class="eligible-box" id="eligibleBox">
+                <i class="fas fa-check-circle" id="eligIcon" style="font-size:48px; margin-bottom:12px;"></i>
+                <h2 id="eligTitle"></h2>
+                <p id="eligSubtitle" style="color:#475569; font-size:14px;"></p>
+                <div class="max-amount" id="maxAmount"></div>
+                <p style="font-size:12px; color:#64748b;">Maximum Eligible Loan Amount</p>
+            </div>
+            <div class="details-grid" id="detailsGrid"></div>
+            <div class="tips" id="tipsArea"></div>
+            <div style="text-align:center; margin-top:24px;">
+                <a href="/" style="display:inline-block; padding:14px 32px; background:linear-gradient(135deg,#059669,#10b981); color:white; text-decoration:none; border-radius:10px; font-weight:600; font-size:14px;">
+                    <i class="fas fa-paper-plane"></i> Apply Now
+                </a>
+            </div>
+        </div>
+    </div>
+    <script>
+        async function checkEligibility() {
+            const income = parseInt(document.getElementById('monthlyIncome').value) || 0;
+            const emi = parseInt(document.getElementById('existingEmi').value) || 0;
+            const age = parseInt(document.getElementById('ageInput').value) || 30;
+            const cibil = parseInt(document.getElementById('cibilInput').value) || 700;
+            const res = await fetch('/api/eligibility/check', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({monthly_income:income, existing_emi:emi, age:age, cibil_score:cibil}) });
+            const data = await res.json();
+            const box = document.getElementById('eligibleBox');
+            const icon = document.getElementById('eligIcon');
+            box.className = 'eligible-box ' + (data.eligible ? 'yes' : 'no');
+            icon.style.color = data.eligible ? '#059669' : '#dc2626';
+            icon.className = 'fas ' + (data.eligible ? 'fa-check-circle' : 'fa-times-circle');
+            document.getElementById('eligTitle').textContent = data.eligible ? 'You\'re Eligible!' : 'Not Eligible Currently';
+            document.getElementById('eligSubtitle').textContent = data.eligible ? 'Based on your income and credit profile' : 'Your current profile doesn\'t meet minimum criteria';
+            document.getElementById('maxAmount').textContent = '₹' + data.max_loan_amount.toLocaleString('en-IN');
+            document.getElementById('detailsGrid').innerHTML = `
+                <div class="detail-item"><div class="value">₹${data.max_emi_affordable.toLocaleString('en-IN')}</div><div class="label">Max EMI You Can Afford</div></div>
+                <div class="detail-item"><div class="value">${data.suggested_interest_rate}%</div><div class="label">Expected Interest Rate</div></div>
+                <div class="detail-item"><div class="value">${data.max_tenure_months} months</div><div class="label">Max Tenure Available</div></div>
+                <div class="detail-item"><div class="value">${data.risk_category}</div><div class="label">Risk Category</div></div>
+            `;
+            let tipsHtml = '';
+            (data.tips || []).forEach(tip => { tipsHtml += `<div class="tip-item"><i class="fas fa-lightbulb"></i><span>${tip}</span></div>`; });
+            document.getElementById('tipsArea').innerHTML = tipsHtml;
+            document.getElementById('resultSection').classList.add('show');
+            document.getElementById('resultSection').scrollIntoView({behavior:'smooth'});
+        }
+    </script>
+</body>
+</html>

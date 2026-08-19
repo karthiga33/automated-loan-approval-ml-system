@@ -1,0 +1,18 @@
+============================================
+       GOVERNMENT OF INDIA
+  UNIQUE IDENTIFICATION AUTHORITY
+           AADHAAR CARD
+============================================
+
+Name:           Rajesh Kumar Sharma
+Date of Birth:  15/03/1992
+Gender:         Male
+
+Aadhaar Number: 9876 5432 1012
+
+[PHOTO PLACEHOLDER]
+
+============================================
+This is a SAMPLE TEST DOCUMENT for system
+testing purposes only. Not a real Aadhaar.
+============================================

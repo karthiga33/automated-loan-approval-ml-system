@@ -1,0 +1,49 @@
+============================================
+       INFOSYS LIMITED
+    PAYSLIP - JULY 2026
+============================================
+
+Employee Name:      Rajesh Kumar Sharma
+Employee ID:        INF-BLR-78432
+Designation:        Senior Software Engineer
+Department:         Digital Services
+Date of Joining:    01/08/2019
+PAN:                ABCPK1234F
+Bank Account:       39876543210 (SBI)
+
+--------------------------------------------
+EARNINGS                        AMOUNT (Rs.)
+--------------------------------------------
+Basic Salary                       28,000
+House Rent Allowance (HRA)         14,000
+Dearness Allowance (DA)             2,800
+Special Allowance                   8,200
+Conveyance Allowance                1,600
+Medical Allowance                   1,250
+Performance Bonus                   5,150
+--------------------------------------------
+GROSS SALARY                       61,000
+--------------------------------------------
+
+--------------------------------------------
+DEDUCTIONS                      AMOUNT (Rs.)
+--------------------------------------------
+Provident Fund (PF) - Employee      3,360
+Professional Tax (PT)                 200
+TDS / Income Tax                    2,940
+ESI                                     0
+--------------------------------------------
+TOTAL DEDUCTIONS                    6,500
+--------------------------------------------
+
+--------------------------------------------
+NET SALARY (Take Home)             54,500
+--------------------------------------------
+
+Payment Mode: NEFT to SBI Account
+Payment Date: 01/07/2026
+
+============================================
+This is a SAMPLE TEST DOCUMENT for system
+testing purposes only.
+============================================

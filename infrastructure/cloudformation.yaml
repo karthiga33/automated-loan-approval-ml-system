@@ -1,0 +1,253 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Loan Approval ML System - Complete AWS Infrastructure (Free Tier Optimized)'
+
+Parameters:
+  BucketName:
+    Type: String
+    Default: loan-approval-ml-system
+    Description: S3 bucket name for the loan approval system
+
+  Environment:
+    Type: String
+    Default: prod
+    AllowedValues: [dev, staging, prod]
+    Description: Deployment environment
+
+Resources:
+  # ============================================================
+  # S3 BUCKET - Store applications, documents, models, predictions
+  # ============================================================
+  LoanApprovalBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      LifecycleConfiguration:
+        Rules:
+          - Id: CleanupOldRawData
+            Status: Enabled
+            Prefix: raw/
+            ExpirationInDays: 90
+          - Id: CleanupOldPredictions
+            Status: Enabled
+            Prefix: predictions/
+            ExpirationInDays: 365
+      Tags:
+        - Key: Project
+          Value: LoanApprovalSystem
+        - Key: Environment
+          Value: !Ref Environment
+
+  # ============================================================
+  # DYNAMODB - Store loan decisions
+  # ============================================================
+  LoanApprovalDecisionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: LoanApprovalDecisions
+      BillingMode: PAY_PER_REQUEST  # Free tier: 25 RCU + 25 WCU
+      AttributeDefinitions:
+        - AttributeName: application_id
+          AttributeType: S
+        - AttributeName: date
+          AttributeType: S
+      KeySchema:
+        - AttributeName: application_id
+          KeyType: HASH
+        - AttributeName: date
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: DateIndex
+          KeySchema:
+            - AttributeName: date
+              KeyType: HASH
+            - AttributeName: application_id
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+      Tags:
+        - Key: Project
+          Value: LoanApprovalSystem
+
+  # Document tracking table
+  LoanApprovalDocumentsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: LoanApprovalDocuments
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: application_id
+          AttributeType: S
+        - AttributeName: document_type
+          AttributeType: S
+      KeySchema:
+        - AttributeName: application_id
+          KeyType: HASH
+        - AttributeName: document_type
+          KeyType: RANGE
+      Tags:
+        - Key: Project
+          Value: LoanApprovalSystem
+
+  # ============================================================
+  # IAM ROLE - Lambda execution role (least privilege)
+  # ============================================================
+  LoanApprovalLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LoanApprovalLambdaRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: LoanApprovalS3Access
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:ListBucket
+                Resource:
+                  - !GetAtt LoanApprovalBucket.Arn
+                  - !Sub '${LoanApprovalBucket.Arn}/*'
+        - PolicyName: LoanApprovalDynamoDBAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:GetItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  - dynamodb:UpdateItem
+                Resource:
+                  - !GetAtt LoanApprovalDecisionsTable.Arn
+                  - !GetAtt LoanApprovalDocumentsTable.Arn
+                  - !Sub '${LoanApprovalDecisionsTable.Arn}/index/*'
+        - PolicyName: LoanApprovalTextractAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - textract:DetectDocumentText
+                  - textract:AnalyzeDocument
+                Resource: '*'
+        - PolicyName: LoanApprovalLambdaInvoke
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:loan-approval-*'
+
+  # ============================================================
+  # LAMBDA FUNCTIONS
+  # ============================================================
+  LoanApprovalExtractorFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: loan-approval-extractor
+      Runtime: python3.9
+      Handler: lambda-loan-extractor.lambda_handler
+      Role: !GetAtt LoanApprovalLambdaRole.Arn
+      Timeout: 60
+      MemorySize: 256
+      Environment:
+        Variables:
+          S3_BUCKET_NAME: !Ref BucketName
+          AWS_REGION_NAME: !Ref AWS::Region
+      Tags:
+        - Key: Project
+          Value: LoanApprovalSystem
+
+  LoanApprovalProcessorFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: loan-approval-processor
+      Runtime: python3.9
+      Handler: lambda-loan-processor.lambda_handler
+      Role: !GetAtt LoanApprovalLambdaRole.Arn
+      Timeout: 120
+      MemorySize: 512
+      Environment:
+        Variables:
+          S3_BUCKET_NAME: !Ref BucketName
+          AWS_REGION_NAME: !Ref AWS::Region
+      Tags:
+        - Key: Project
+          Value: LoanApprovalSystem
+
+  LoanApprovalPredictorFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: loan-approval-predictor
+      Runtime: python3.9
+      Handler: lambda-loan-predictor.lambda_handler
+      Role: !GetAtt LoanApprovalLambdaRole.Arn
+      Timeout: 300
+      MemorySize: 1024
+      Environment:
+        Variables:
+          S3_BUCKET_NAME: !Ref BucketName
+          DYNAMODB_TABLE: LoanApprovalDecisions
+          MODEL_KEY: models/loan_approval_pipeline.pkl
+          AWS_REGION_NAME: !Ref AWS::Region
+      Tags:
+        - Key: Project
+          Value: LoanApprovalSystem
+
+  LoanApprovalDocumentProcessorFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: loan-approval-document-processor
+      Runtime: python3.9
+      Handler: lambda-document-processor.lambda_handler
+      Role: !GetAtt LoanApprovalLambdaRole.Arn
+      Timeout: 120
+      MemorySize: 512
+      Environment:
+        Variables:
+          S3_BUCKET_NAME: !Ref BucketName
+          DOCUMENTS_TABLE: LoanApprovalDocuments
+          AWS_REGION_NAME: !Ref AWS::Region
+      Tags:
+        - Key: Project
+          Value: LoanApprovalSystem
+
+Outputs:
+  BucketArn:
+    Description: S3 Bucket ARN
+    Value: !GetAtt LoanApprovalBucket.Arn
+
+  DecisionsTableArn:
+    Description: DynamoDB Decisions Table ARN
+    Value: !GetAtt LoanApprovalDecisionsTable.Arn
+
+  LambdaRoleArn:
+    Description: Lambda Execution Role ARN
+    Value: !GetAtt LoanApprovalLambdaRole.Arn
+
+  Region:
+    Description: Deployment Region
+    Value: !Ref AWS::Region
