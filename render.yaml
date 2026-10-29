@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: loan-approval-flask
+    runtime: python
+    plan: free
+    # Install production dependencies (Flask + ML + gunicorn)
+    buildCommand: "pip install -r requirements-render.txt"
+    # Bind to the port Render provides. 1 worker keeps memory under the
+    # free tier's 512MB limit (the ML model is loaded per worker).
+    # Long timeout so the first request (model load) is not killed.
+    startCommand: "gunicorn app_local:app --bind 0.0.0.0:$PORT --workers 1 --timeout 120"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"

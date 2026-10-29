@@ -977,6 +977,15 @@ def get_next_steps(decision: str) -> list:
 # START SERVER
 # ============================================================
 
+# When run under a WSGI server (gunicorn on Render), __main__ never executes,
+# so warm up the ML model at import time to avoid a slow first request.
+if __name__ != "__main__":
+    try:
+        get_model()
+    except Exception as _warmup_err:  # never block startup on warm-up
+        print(f"Model warm-up skipped: {_warmup_err}")
+
+
 if __name__ == "__main__":
     print("")
     print("=" * 60)
