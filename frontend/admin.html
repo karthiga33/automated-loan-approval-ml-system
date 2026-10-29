@@ -133,7 +133,7 @@
         (loansData.loans || []).forEach(l => {
             const badgeCls = l.status === 'ACTIVE' ? 'active' : 'closed';
             loansTbody.innerHTML += `<tr>
-                <td><strong><a href="/tracker" style="color:#1a56db;text-decoration:none;">${l.loan_id}</a></strong></td>
+                <td><strong><a href="/tracker?id=${l.loan_id}" style="color:#1a56db;text-decoration:none;">${l.loan_id}</a></strong></td>
                 <td>${l.customer_name || '—'}</td>
                 <td>₹${l.loan_amount.toLocaleString()}</td>
                 <td>₹${l.emi_amount.toLocaleString()}</td>

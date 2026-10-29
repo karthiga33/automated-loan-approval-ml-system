@@ -66,14 +66,16 @@ class LoanExplainabilityService:
         self._analyze_credit_history(application_data, cibil_report, positive_factors, negative_factors, suggestions)
         self._analyze_income(application_data, positive_factors, negative_factors, suggestions)
         self._analyze_employment(application_data, positive_factors, negative_factors, suggestions)
-        self._analyze_existing_debt(cibil_report, positive_factors, negative_factors, suggestions)
         self._analyze_document_verification(verification_result, positive_factors, negative_factors, suggestions)
 
         # Build primary reasons based on decision
         if decision == "REJECTED":
             reasons = negative_factors[:5]  # Top 5 rejection reasons
             if not reasons:
-                reasons = ["Application does not meet current lending criteria"]
+                # No threshold rule tripped, but the decision is still a rejection.
+                # Derive specific, honest reasons from the actual application values
+                # so the user never sees a vague "does not meet criteria" message.
+                reasons = self._derive_rejection_reasons(application_data, cibil_report)
         elif decision == "APPROVED":
             reasons = positive_factors[:5]
         else:  # MANUAL_REVIEW
@@ -93,6 +95,61 @@ class LoanExplainabilityService:
                 "Contact our support team for further assistance."
             )
         }
+
+    def _derive_rejection_reasons(self, data, cibil_report):
+        """Produce specific rejection reasons when no threshold rule tripped.
+
+        Guarantees the user always sees concrete reasons instead of a generic
+        fallback. Reasons are ordered from most to least likely to be relevant.
+        """
+        reasons = []
+
+        # Loan-to-income ratio (the single strongest driver in the model)
+        try:
+            ratio = float(data.get("loan_percent_income", 0) or 0)
+        except (TypeError, ValueError):
+            ratio = 0.0
+        if ratio >= 0.3:
+            reasons.append(
+                f"Loan amount is a high {ratio*100:.0f}% of your income, which raises repayment risk"
+            )
+
+        # CIBIL score in the mid band (not failing, but not strong)
+        score = None
+        if cibil_report and cibil_report.get("status") == "success":
+            score = cibil_report.get("credit_score", {}).get("score")
+        if score is not None and score < 750:
+            reasons.append(
+                f"CIBIL score ({score}/900) is below the preferred level of 750 for automatic approval"
+            )
+
+        # Interest rate
+        try:
+            rate = float(data.get("loan_int_rate", 0) or 0)
+        except (TypeError, ValueError):
+            rate = 0.0
+        if rate >= 12:
+            reasons.append(
+                f"The applicable interest rate ({rate:.1f}%) indicates a higher-risk loan profile"
+            )
+
+        # Employment experience
+        try:
+            emp_exp = float(data.get("person_emp_exp", 0) or 0)
+        except (TypeError, ValueError):
+            emp_exp = 0.0
+        if emp_exp < 3:
+            reasons.append(
+                f"Employment experience ({emp_exp:.0f} year(s)) is on the lower side for this loan size"
+            )
+
+        # Always-present catch-all so the model's overall assessment is acknowledged,
+        # but only AFTER any specific reasons above.
+        reasons.append(
+            "Our automated model assessed the overall risk of this application as higher than our approval threshold"
+        )
+
+        return reasons[:5]
 
     def _analyze_income_ratio(self, data, positive, negative, suggestions):
         """Analyze loan-to-income ratio."""
@@ -195,29 +252,6 @@ class LoanExplainabilityService:
             positive.append("Full-time employment provides income stability")
         elif emp_type in ["Part-time", "Contract"]:
             negative.append(f"{emp_type} employment may indicate income instability")
-
-    def _analyze_existing_debt(self, cibil_report, positive, negative, suggestions):
-        """Analyze existing debt burden."""
-        if not cibil_report or cibil_report.get("status") != "success":
-            return
-
-        active_loans = cibil_report.get("account_summary", {}).get("active_loans", 0)
-        outstanding = cibil_report.get("account_summary", {}).get("total_outstanding_debt", 0)
-
-        if active_loans > self.CONCERN_THRESHOLDS["active_loans_count"]["max"]:
-            negative.append(
-                f"High number of active loans ({active_loans})"
-            )
-            suggestions.append(
-                "Consider closing some existing loans before applying for a new one"
-            )
-        elif active_loans == 0:
-            positive.append("No existing loan obligations")
-
-        if outstanding > 0:
-            negative.append(
-                f"Existing outstanding debt of ₹{outstanding:,.0f}"
-            )
 
     def _analyze_document_verification(self, verification, positive, negative, suggestions):
         """Analyze document verification results."""

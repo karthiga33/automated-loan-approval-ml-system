@@ -16,7 +16,7 @@ import uuid
 import joblib
 import pandas as pd
 import numpy as np
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Flask, request, jsonify, send_from_directory
 from pathlib import Path
 
@@ -256,12 +256,28 @@ def verify_documents(application_id):
     if not doc_dir.exists() or not list(doc_dir.iterdir()):
         return jsonify({"error": "No documents uploaded yet"}), 400
 
-    # Read all uploaded document files
+    # Read all uploaded document files (support PDF and plain text)
     extracted = {}
     for doc_file in doc_dir.iterdir():
         try:
-            content = doc_file.read_text(encoding="utf-8", errors="ignore")
-            doc_type = doc_file.stem.split("_")[0]
+            suffix = doc_file.suffix.lower()
+            if suffix == ".pdf":
+                # Extract text from PDF using PyPDF2
+                try:
+                    import PyPDF2
+                    content = ""
+                    with open(doc_file, "rb") as pdf_f:
+                        reader = PyPDF2.PdfReader(pdf_f)
+                        for page in reader.pages:
+                            page_text = page.extract_text()
+                            if page_text:
+                                content += page_text + "\n"
+                except Exception as pdf_err:
+                    print(f"PDF read error for {doc_file.name}: {pdf_err}")
+                    content = ""
+            else:
+                # Plain text / other formats
+                content = doc_file.read_text(encoding="utf-8", errors="ignore")
             extracted[doc_file.name] = content
         except Exception:
             continue
@@ -311,7 +327,12 @@ def verify_documents(application_id):
     # CHECK 4: Income verification (from salary slips)
     form_income = app_data.get("person_income", 0)
     monthly_form = form_income / 12 if form_income > 0 else 0
-    salary_amounts = re.findall(r"(?:NET SALARY|Net Salary|Take Home)[^\d]*?([\d,]+)", all_text)
+    # Match "NET SALARY (Take Home)" style labels — number may follow on same or next line
+    salary_amounts = re.findall(
+        r"(?:NET SALARY|Net Salary|Take Home|NET PAY|Net Pay)[^\d\n]{0,30}([\d,]+)",
+        all_text,
+        re.IGNORECASE
+    )
     salary_found = None
     if salary_amounts:
         salary_found = float(salary_amounts[0].replace(",", ""))
@@ -449,15 +470,14 @@ def check_eligibility():
     """Quick eligibility pre-check before full application."""
     data = request.get_json()
     income = float(data.get("monthly_income", 0))
-    existing_emi = float(data.get("existing_emi", 0))
     age = int(data.get("age", 30))
     cibil_score = int(data.get("cibil_score", 700))
 
     if income <= 0:
         return jsonify({"error": "Monthly income is required"}), 400
 
-    # FOIR (Fixed Obligation to Income Ratio) - max 50-60%
-    available_for_emi = (income * 0.50) - existing_emi
+    # Existing-loan concept removed: EMI capacity is based purely on income.
+    available_for_emi = income * 0.50
     if available_for_emi < 0:
         available_for_emi = 0
 
@@ -508,18 +528,14 @@ def check_eligibility():
         "max_tenure_months": max_tenure_months,
         "risk_category": risk,
         "monthly_income": income,
-        "existing_obligations": existing_emi,
-        "foir_percentage": round(((existing_emi / income) * 100) if income > 0 else 0, 1),
-        "tips": _get_eligibility_tips(max_loan_adjusted, cibil_score, income, existing_emi)
+        "tips": _get_eligibility_tips(max_loan_adjusted, cibil_score, income)
     })
 
 
-def _get_eligibility_tips(max_loan, cibil, income, emi):
+def _get_eligibility_tips(max_loan, cibil, income):
     tips = []
     if cibil < 750:
         tips.append("Improving your CIBIL score above 750 can increase your eligible amount by 15-30%")
-    if emi > income * 0.3:
-        tips.append("Reducing existing EMI obligations will increase your eligibility")
     if max_loan < 100000:
         tips.append("Consider adding a co-applicant to increase your loan eligibility")
     if max_loan > 0:
@@ -833,21 +849,55 @@ FEATURE_COLUMNS = [
 
 
 def make_prediction(application_data: dict, cibil_report: dict = None) -> dict:
-    """Make loan prediction using ML model or rule-based fallback."""
+    """Make loan prediction using deterministic rules first, then the ML model.
+
+    Approval policy (decides BEFORE the ML model so strong profiles are not
+    rejected by model quirks):
+      - Hard REJECT: CIBIL < 500, OR prior defaults on file, OR loan > 50% of income.
+      - APPROVE:     CIBIL >= 700 AND loan <= 40% of income AND no defaults
+                     AND annual income >= Rs.2,00,000.
+      - Otherwise:   fall through to the ML model, then MANUAL_REVIEW.
+    """
     model = get_model()
 
     features = {col: application_data.get(col, 0) for col in FEATURE_COLUMNS}
 
-    # CIBIL-based hard rules
+    # --- Gather the signals used by the deterministic policy ---
     cibil_score = None
     if cibil_report and cibil_report.get("status") == "success":
         cibil_score = cibil_report.get("credit_score", {}).get("score", 0)
         defaults = cibil_report.get("payment_history", {}).get("defaults", 0)
-
-        if cibil_score < 500:
-            return {"decision": "REJECTED", "confidence": 0.92, "method": "cibil_hard_reject"}
         if defaults > 0:
             features["previous_loan_defaults_on_file"] = "Yes"
+
+    try:
+        loan_pct = float(application_data.get("loan_percent_income", 0) or 0)
+    except (TypeError, ValueError):
+        loan_pct = 0.0
+    try:
+        income = float(application_data.get("person_income", 0) or 0)
+    except (TypeError, ValueError):
+        income = 0.0
+    has_defaults = (
+        str(application_data.get("previous_loan_defaults_on_file", "No")).strip().lower() == "yes"
+        or features.get("previous_loan_defaults_on_file") == "Yes"
+    )
+
+    # --- Hard reject rules ---
+    if cibil_score is not None and cibil_score < 500:
+        return {"decision": "REJECTED", "confidence": 0.92, "method": "rule_hard_reject_cibil"}
+    if has_defaults:
+        return {"decision": "REJECTED", "confidence": 0.88, "method": "rule_hard_reject_default"}
+    if loan_pct > 0.5:
+        return {"decision": "REJECTED", "confidence": 0.85, "method": "rule_hard_reject_loan_ratio"}
+
+    # --- Approve rule for strong profiles ---
+    cibil_ok = (cibil_score is None) or (cibil_score >= 700)
+    if cibil_ok and loan_pct <= 0.4 and loan_pct >= 0 and income >= 200000:
+        confidence = 0.90
+        if cibil_score and cibil_score >= 750:
+            confidence = 0.95
+        return {"decision": "APPROVED", "confidence": confidence, "method": "rule_approve"}
 
     # ML Model prediction
     if model is not None:

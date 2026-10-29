@@ -78,27 +78,21 @@ class CIBILService:
         score = int(rng.gauss(700, 100))
         score = max(300, min(900, score))
 
-        # Generate loan history based on score
+        # Existing-loan concept removed: do not fabricate any prior loans or debt.
+        # Only payment-history quality is derived from the score.
         if score >= 750:
-            active_loans = rng.randint(0, 2)
-            defaults = 0
             late_payments = rng.randint(0, 2)
         elif score >= 650:
-            active_loans = rng.randint(1, 3)
-            defaults = rng.randint(0, 1)
             late_payments = rng.randint(2, 6)
         elif score >= 550:
-            active_loans = rng.randint(1, 4)
-            defaults = rng.randint(1, 2)
             late_payments = rng.randint(4, 10)
         else:
-            active_loans = rng.randint(2, 5)
-            defaults = rng.randint(2, 4)
             late_payments = rng.randint(8, 20)
 
-        # Generate outstanding debt
-        outstanding_debt = rng.randint(0, 500000) if active_loans > 0 else 0
-        monthly_emi = int(outstanding_debt * 0.03) if outstanding_debt > 0 else 0
+        active_loans = 0
+        defaults = 0
+        outstanding_debt = 0
+        monthly_emi = 0
 
         # Generate enquiry count (last 6 months)
         recent_enquiries = rng.randint(0, 5)
@@ -116,11 +110,11 @@ class CIBILService:
                 "score_range": {"min": 300, "max": 900}
             },
             "account_summary": {
-                "active_loans": active_loans,
-                "closed_loans": rng.randint(0, 5),
-                "total_outstanding_debt": outstanding_debt,
-                "monthly_emi_obligations": monthly_emi,
-                "credit_utilization_percent": rng.randint(10, 90) if active_loans > 0 else 0
+                "active_loans": 0,
+                "closed_loans": 0,
+                "total_outstanding_debt": 0,
+                "monthly_emi_obligations": 0,
+                "credit_utilization_percent": 0
             },
             "payment_history": {
                 "on_time_payments_percent": max(60, 100 - (late_payments * 3)),
@@ -128,7 +122,7 @@ class CIBILService:
                 "late_payments_60_days": max(0, late_payments - 3),
                 "late_payments_90_days": max(0, late_payments - 6),
                 "defaults": defaults,
-                "settled_accounts": rng.randint(0, defaults)
+                "settled_accounts": 0
             },
             "enquiry_history": {
                 "last_6_months": recent_enquiries,

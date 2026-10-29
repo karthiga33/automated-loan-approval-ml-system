@@ -162,6 +162,17 @@
     <script>
     let currentLoanId = null;
 
+    // Auto-load loan ID from URL query param (e.g. /tracker?id=LN-XXXXXXXX)
+    window.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const idFromUrl = params.get('id');
+        if (idFromUrl) {
+            document.getElementById('loanIdInput').value = idFromUrl;
+            currentLoanId = idFromUrl;
+            loadLoanDetails(idFromUrl);
+        }
+    });
+
     function showCreateLoan() {
         const form = document.getElementById('createLoanForm');
         form.style.display = form.style.display === 'none' ? 'block' : 'none';

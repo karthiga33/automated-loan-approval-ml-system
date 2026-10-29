@@ -205,3 +205,10 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Loan app generated/runtime data (not needed in repo; model retrains from CSV)
+local_data/applications/
+local_data/decisions/
+local_data/documents/
+local_data/loans/
+local_data/models/*.pkl

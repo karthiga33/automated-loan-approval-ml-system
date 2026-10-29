@@ -67,11 +67,6 @@
                     <span class="hint">Net take-home salary per month</span>
                 </div>
                 <div class="form-group">
-                    <label>Existing EMIs (₹/month)</label>
-                    <input type="number" id="existingEmi" placeholder="e.g., 12000" value="0">
-                    <span class="hint">Total of all current loan EMIs</span>
-                </div>
-                <div class="form-group">
                     <label>Your Age</label>
                     <input type="number" id="ageInput" min="18" max="65" placeholder="e.g., 32" value="32">
                 </div>
@@ -103,10 +98,9 @@
     <script>
         async function checkEligibility() {
             const income = parseInt(document.getElementById('monthlyIncome').value) || 0;
-            const emi = parseInt(document.getElementById('existingEmi').value) || 0;
             const age = parseInt(document.getElementById('ageInput').value) || 30;
             const cibil = parseInt(document.getElementById('cibilInput').value) || 700;
-            const res = await fetch('/api/eligibility/check', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({monthly_income:income, existing_emi:emi, age:age, cibil_score:cibil}) });
+            const res = await fetch('/api/eligibility/check', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({monthly_income:income, age:age, cibil_score:cibil}) });
             const data = await res.json();
             const box = document.getElementById('eligibleBox');
             const icon = document.getElementById('eligIcon');
